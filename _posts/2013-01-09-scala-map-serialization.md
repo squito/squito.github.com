@@ -4,6 +4,7 @@ title: Large Scala Maps Fail Serialization
 published: true
 tags:
     - Scala
+    - Coding
 ---
 
 I spent some time dealing with a rather unusual error.  Took me a little while to figure it out, but it turns out
