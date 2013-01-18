@@ -1,8 +1,7 @@
-
 ---
 layout: post
 title: Where Scala Got It Wrong
-published: false
+published: true
 tags:
     - Scala
     - Coding
@@ -25,14 +24,14 @@ exception.  I had often wanted a way to force immutability in Java.  Scala made 
 creating immutable and mutable versions of most collections, plus a common interface covering both.  (I'm not
 a huge fan of the fact that the names are only differentiated by packages, but I can live with that.)
 
-But, they made a horrible mistake when they included the *immutable* versions, instead of the *common interfaces*
+    But, they made a horrible mistake when they included the *immutable* versions, instead of the *common interfaces*
 in Predef.  I can only imagine that they did this because they wanted to bias everyone to use immutable collections
 by default, as all "good" functional programmers should.  This means that when you write a method `def doXYZ(data:Map[String,Int]) : Boolean`,
 you have just defined a method that can *only* accept immutable maps.  That might even by work fine for you
 when you write the method.  But later on, another developer will come along and try to use that method with
 a mutable Map, and it won't compile.
 
-From now on, I always `import collection._`.  That way, I get the generic interfaces by default in my API, and I
+    From now on, I always `import collection._`.  That way, I get the generic interfaces by default in my API, and I
 explicitly request the mutable or immutable version of the collection if I want to, eg. `val m = mutable.Map[String,Int]()`
 
 2. DSL run amok.  One of my biggest complaints about Java was the lack of operator overloading.  Just look at the BigNumber api,
