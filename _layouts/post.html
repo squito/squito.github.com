@@ -3,26 +3,28 @@ layout: default
 external:
 ---
 
+<header class="big">
+  <h1>
+  <a href="{{ page.url }}">{{ page.title }}</a>
+  </h1>
+  <span> {{ page.date | date: "%b %d, %Y" }} </span>
+</header>
+
 <div class="content">
   <div id="post">
-    <h1>
-	  <a href="{{ page.url }}">{{ page.title }}</a>
-    </h1>
-    <br />
     <div class="body">
       {{ content }}
     </div>
-    <br />
-    <postamble datetime="{{ post.date | date: "%Y-%m%d" }} ">
-	  -- {{ page.date | date: "%b %d, %Y" }}
-    </postamble>
-    <!--<h4>Tags:</h4>-->
-    <ul id="post_tags">
+
+    <h4 class='tagged-title'>Tagged:</h4>
+    <ul id="post_tags" class='tag-list'>
     {% for tag in page.tags %}
-      <li><a class="tag" href="/tag/{{ tag }}">{{ tag }}</a></li>
+      <li class='tag'><a href="/tag/{{ tag }}">{{ tag }}</a></li>
     {% endfor %}
     </ul>
-    <br />
+    <div class="divide">
+    {% include ornaments.html %}
+    </div>
     {% include comments.html %}
   </div>
 </div>
