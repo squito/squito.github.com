@@ -13,10 +13,11 @@ module Jekyll
       self.content = <<-EOS
 <ul class="posts">
 {% for post in page.posts %}
-<li id=\"tag\"><a href="{{ post.url }}" >{{ post.title }}</a></li>
+<li class=\"tag\">
+<span>{{ post.date | date: "%B %e, %Y" }}</span>
+<a href="{{ post.url }}" >{{ post.title }}</a></li>
 {% endfor %}
 </ul>
-<bold><a href="/tags">Back To Tag List</a></bold>
 EOS
       self.data = {
         'layout' => 'tag',
