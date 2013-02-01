@@ -2,11 +2,17 @@
 layout: default
 ---
 
+<header class="big">
+  <h1>
+    <a href="{{ page.url }}">{{ page.title }}</a>
+  </h1>
+  <div class="divide">
+  {% include ornaments.html %}
+  </div>
+</header>
+
 <div class="content">
   <div id="post" class="tag">
-    <h1>
-    <a href"{{ page.url }}">{{ page.title }}</a>
-    </h1>
     <div class="body">
       {{ content }}
     </div>
