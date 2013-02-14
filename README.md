@@ -1,4 +1,0 @@
-squito
-======
-
-my blog
