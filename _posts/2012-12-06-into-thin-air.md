@@ -4,7 +4,6 @@ title: Into Thin Air
 published: true
 tags:
     - book review
-    - recommended
 ---
 
 I've been getting into the outdoors more and more recently, and had started toying with the

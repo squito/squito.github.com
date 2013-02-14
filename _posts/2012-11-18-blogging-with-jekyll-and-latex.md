@@ -5,8 +5,6 @@ published: true
 tags:
     - jekyll
     - latex
-    - MathJax
-    - markdown
 ---
 
 Its taken me forever to create a blog, mostly because I didn't like all of the blogging platforms out there.  But I recently

@@ -4,7 +4,6 @@ title: Where Scala Got It Wrong
 published: true
 tags:
     - Scala
-    - Coding
 ---
 
 I've been a Scala developer for just over half a year now.  Scala is amazing; coming frmo a background in

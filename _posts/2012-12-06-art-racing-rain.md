@@ -4,7 +4,6 @@ title: The Art of Racing In the Rain
 published: true
 tags:
     - book review
-    - highly recommended
 ---
 
 I'm not a dog person, and _The Art of Racing in the Rain_ by Garth Stein made me want a dog.  Enzo is an intensely
