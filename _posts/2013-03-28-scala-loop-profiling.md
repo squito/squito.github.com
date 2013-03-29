@@ -24,63 +24,70 @@ So I wanted to compare the direct while loop to two alternatives:
 
 All of these experiments are with Scala 2.9.1-1, on a MacbookPro 2.4 GHz Intel Core i7, 8 GB 1333 MHz DDR3.
 
-== One Big Loop ==
+== My Experiments ==
 
-The first thing I wanted to profile was a very simple loop over a giant array.  Here's my code:
+The first thing I wanted to profile was a very simple loop over a giant array.  I made a couple of modifications along
+the way, which I'll discuss below, but here's code I ended up with at the end.  (I added the `array.foreach` towards the
+end of my experiments, so not all my results include it.)
 
-    package org.sblaj.ml
+	package org.sblaj.ml
 
-    import annotation.tailrec
+	import annotation.tailrec
 
-    /**
-     *
-     */
+	object IterationTiming {
+	 def timeIterations(n: Int) {
+	   val arr = new Array[Int](n)
+	   var idx = 0
+	   val itrStart = System.currentTimeMillis()
+	   while (idx < n) {
+	     arr(idx) = idx + 1
+	     idx += 1
+	   }
+	   val itrEnd = System.currentTimeMillis()
+	   println("itr took " + (itrEnd - itrStart) + "ms")
 
-    object Blah {
-     def blah(n: Int) {
-       val arr = new Array[Int](n)
-       var idx = 0
-       val itrStart = System.currentTimeMillis()
-       while (idx < n) {
-	 arr(idx) = idx + 1
-	 idx += 1
-       }
-       val itrEnd = System.currentTimeMillis()
-       println("itr took " + (itrEnd - itrStart) + "ms")
+	   @tailrec
+	   def tailRecItr(arr: Array[Int], idx: Int) {
+	     if (idx >= n)
+	       return  //tailrec annotation not happy if recursive call is inside a condition, so have to use a return
+	     arr(idx) = idx + 2
+	     tailRecItr(arr, idx + 1)
+	   }
+	   val tailRecStart = System.currentTimeMillis()
+	   tailRecItr(arr, 0)
+	   val tailRecEnd = System.currentTimeMillis()
+	   println("tail rec took " + (tailRecEnd - tailRecStart) + "ms")
 
-       @tailrec
-       def tailRecItr(arr: Array[Int], idx: Int) {
-	 if (idx >= n)
-	   return  //tailrec annotation not happy if recursive call is inside a condition!
-	 arr(idx) = idx + 2
-	 tailRecItr(arr, idx + 1)
-       }
-       val tailRecStart = System.currentTimeMillis()
-       tailRecItr(arr, 0)
-       val tailRecEnd = System.currentTimeMillis()
-       println("tail rec took " + (tailRecEnd - tailRecStart) + "ms")
-
-       val forStart = System.currentTimeMillis()
-       (0 until n).foreach{idx => arr(idx) = idx + 3}
-       val forEnd = System.currentTimeMillis()
-       println("foreach took " + (forEnd - forStart) + "ms")
+	   val forStart = System.currentTimeMillis()
+	   (0 until n).foreach{idx => arr(idx) = idx + 3}
+	   val forEnd = System.currentTimeMillis()
+	   println("foreach took " + (forEnd - forStart) + "ms")
 
 
-       idx = 0
-       val itrStart2 = System.currentTimeMillis()
-       while (idx < n) {
-	 arr(idx) = idx + 1
-	 idx += 1
-       }
-       val itrEnd2 = System.currentTimeMillis()
-       println("itr took " + (itrEnd2 - itrStart2) + "ms")
+	   idx = 0
+	   val itrStart2 = System.currentTimeMillis()
+	   while (idx < n) {
+	     arr(idx) = idx + 1
+	     idx += 1
+	   }
+	   val itrEnd2 = System.currentTimeMillis()
+	   println("itr took " + (itrEnd2 - itrStart2) + "ms")
 
-     }
+	   //Try doing a foreach over anything other than a range.  Even just using an array w/ all the values
+	   // in it is *much* slower
+	   val range = (0 until n)
+	   val idxArray = range.toArray
+	   val arrayForStart = System.currentTimeMillis()
+	   idxArray.foreach{idx => arr(idx) = idx - 1}
+	   val arrayForEnd = System.currentTimeMillis()
+	   println("array foreach took " + (arrayForEnd - arrayForStart) + "ms")
+	 }
 
-      def main(args: Array[String]) {
-	blah(args(0).toInt)
-      }
-    }
+	  def main(args: Array[String]) {
+	    timeIterations(args(0).toInt)
+	  }
+	}
+
 
 First, I tried just pasting the relevant code into the scala REPL, first setting n = 1e6.   Here's what I saw printed out:
 
@@ -143,12 +150,14 @@ I tried turning on extra info on what the hotspot compiler was doing with `-XX:+
 it wasn't doing anything special w/ the foreach!  After looking with `javap`, I found out that the lambda if _already compiled away_.
 The foreach wasn't another function call!  This was a real shock.  But, i also had my doubts, because according to javap, my
 tail-recursive function was still creating a function call.  If that was really the case, there is no way it would have comparable
-performance.  Not to mention, the function that was being called wasn't defined anywhere, so there was something very fishy going on.
+performance. 
 
     bash-3.2$ javap -classpath ml/target/scala-2.9.1/classes -c org.sblaj.ml.Blah$
     ...
        91:  invokespecial   #55; //Method tailRecItr$1:([III)V
     ...
+
+I'm no expert on javap, but that sure looks like a method call.  And the method its calling doesn't seem to exist.
 
 However, after some digging, I discovered that scalac already [optimizes foreach over Ranges](https://github.com/scala/scala/commit/4cfc633fc6).
 So, all of that worrying for nothing, foreach was a bit slower, but not massively so.  Maybe good enough in a lot of cases.  Some more 
@@ -157,6 +166,25 @@ reading on the topic:
 * http://ochafik.com/blog/?p=806
 * http://dynamicsofprogramming.blogspot.co.uk/2013/01/loop-performance-and-local-variables-in.html
 
+
+Just to be really sure I wasn't crazy, I tried another foreach, not on a range (the last `array.foreach` in my code).  This confirmed my expectations
+-- it was much slower.
+
+	bash-3.2$ scala -J-Xmx1G -cp ml/target/scala-2.9.1/classes/ org.sblaj.ml.IterationTiming 100000000
+	itr took 77ms
+	tail rec took 77ms
+	foreach took 106ms
+	itr took 57ms
+	array foreach took 430ms
+
+And without the JIT, it was devastatingly slow:
+
+	bash-3.2$ scala -J-Xint -cp ml/target/scala-2.9.1/classes/ org.sblaj.ml.IterationTiming 1000000
+	itr took 14ms
+	tail rec took 15ms
+	foreach took 26ms
+	itr took 14ms
+	array foreach took 750ms
 
 = Summary = 
 
