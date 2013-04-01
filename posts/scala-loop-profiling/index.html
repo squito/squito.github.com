@@ -124,7 +124,7 @@ would get compiled to calling a method on a class, which would have a lot of ove
 
 <p>All of these experiments are with Scala 2.9.1-1, on a MacbookPro 2.4 GHz Intel Core i7, 8 GB 1333 MHz DDR3.</p>
 
-<p>== My Experiments ==</p>
+<h2>My Experiments</h2>
 
 <p>The first thing I wanted to profile was a very simple loop over a giant array.  I made a couple of modifications along
 the way, which I&rsquo;ll discuss below, but here&rsquo;s code I ended up with at the end.  (I added the <code>array.foreach</code> towards the
@@ -236,7 +236,7 @@ itr took 399ms
 
 <p>The iterative version was faster, but not by very much.  I was puzzled.</p>
 
-<p>== JIT,javap, and scalac ==</p>
+<h2>JIT,javap, and scalac</h2>
 
 <p>I thought that maybe the only reason the foreach was able to keep is because the hotspot compiler was able to eliminate
 its overhead and inline that code very quickly.  Indeed, turning off the hotspot compiler <code>-Xint</code> did change the runtime, though not quite
@@ -294,7 +294,7 @@ itr took 14ms
 array foreach took 750ms
 </code></pre>
 
-<p>= Summary =</p>
+<h1>Summary</h1>
 
 <ul>
 <li>Never use the REPL for timing experiments!  Its extremely misleading, not representative of the way you&rsquo;ll really use your code.  Its ok
