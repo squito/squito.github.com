@@ -6,7 +6,9 @@ tags:
     - Scala
 ---
 
-I've started putting more effort into implementing machine learning algorithms in Scala, and right away
+I've started putting more effort into
+[implementing machine learning algorithms in Scala](https://github.com/squito/sblaj/blob/master/ml/src/main/scala/org/sblaj/ml/lda/OnlineVBLDA.scala),
+and right away
 I started wondering about the performance of various ways of looping.  I explored this a bit before
 I switched to Scala from Java, and I remember deciding that I could get comparable performance as long
 as I was careful to use primitive arrays.
@@ -89,7 +91,7 @@ end of my experiments, so not all my results include it.)
 	}
 
 
-First, I tried just pasting the relevant code into the scala REPL, first setting n = 1e6.   Here's what I saw printed out:
+First, I tried just pasting the relevant code into the scala REPL, first setting `n = 1e6`.   Here's what I saw printed out:
 
     itr took 36ms
     tail rec took 7ms
@@ -122,7 +124,7 @@ faster, but the relative comparison was different:
     foreach took 100ms
     itr took 71ms
 
-One standalone run with n=5e8, the warmed
+One standalone run with `n = 5e8`, the warmed
 up iterative version was somewhat faster:
 
     bash-3.2$ scala -J-Xmx4G -cp ml/target/scala-2.9.1/classes/ org.sblaj.ml.IterationTiming 500000000
@@ -147,7 +149,7 @@ as expected:
 
 
 I tried turning on extra info on what the hotspot compiler was doing with `-XX:+PrintCompilation`, and I was shocked to see
-it wasn't doing anything special w/ the foreach!  After looking with `javap`, I found out that the lambda if _already compiled away_.
+it wasn't doing anything special w/ the foreach!  After looking with `javap`, I found out that the lambda is _already compiled away_.
 The foreach wasn't another function call!  This was a real shock.  But, i also had my doubts, because according to javap, my
 tail-recursive function was still creating a function call.  If that was really the case, there is no way it would have comparable
 performance. 
@@ -159,13 +161,8 @@ performance.
 
 I'm no expert on javap, but that sure looks like a method call.  And the method its calling doesn't seem to exist.
 
-However, after some digging, I discovered that scalac already [optimizes foreach over Ranges](https://github.com/scala/scala/commit/4cfc633fc6).
-So, all of that worrying for nothing; `foreach` was a bit slower, but not massively so.  Its probably good enough in a lot of cases.  Some more
-reading on the topic:
-
-* http://ochafik.com/blog/?p=806
-* http://dynamicsofprogramming.blogspot.co.uk/2013/01/loop-performance-and-local-variables-in.html
-
+After some more digging, I found the answer for `foreach`: scalac already [optimizes foreach over Ranges](https://github.com/scala/scala/commit/4cfc633fc6).
+So, all of that worrying for nothing; `foreach` was a bit slower, but not massively so.  Its probably good enough in a lot of cases.
 
 Just to be really sure I wasn't crazy, I tried another foreach, not on a range (the last `array.foreach` in my code).  This confirmed my expectations
 -- it was much slower.
@@ -186,10 +183,17 @@ And without the JIT, it was devastatingly slow:
 	itr took 14ms
 	array foreach took 750ms
 
+If you're interested in reading more on this topic, you can also check out these posts from other blogs, discussing
+other aspects of loop optimizations in scala:
+
+* [Scalaxy/Loops: Optimized foreach loops for Scala 2.10.0 have landed](http://ochafik.com/blog/?p=806)
+* [Loop Performance and Local Variables in Scala](http://dynamicsofprogramming.blogspot.co.uk/2013/01/loop-performance-and-local-variables-in.html)
+
+
 # Summary
 
 * Never use the REPL for timing experiments!  Its extremely misleading, not representative of the way you'll really use your code.  Its ok
 to invoke code from within the REPL when timing, but be sure the code is defined in a file that is compiled normally.
-* `Range.foreach` is optimized!! Yay!! You can still get a bit faster w/ while loops, but its not that bad.  (Don't be fooled into thinking
-this means *all* foreachs are fast -- they're not.)
+* `Range.foreach` is optimized.  Yay! You can still get a bit faster w/ while loops, but the difference is not
+monumental.  (Don't be fooled into thinking this means *all* foreachs are fast -- they're not.)
 * The bytecode of tail-recursive calls is still mysterious ... maybe more on that in the future.
