@@ -104,19 +104,19 @@ When run this way, the times were **totally different**.  The experiments of pas
 After compiling the code, calling it from the REPL or a standalone java were pretty similar.  Now the times were massively
 faster, but the relative comparison was different:
 
-    scala> org.sblaj.ml.Blah.blah(1e6.toInt)
+    scala> org.sblaj.ml.IterationTiming.timeIterations(1e6.toInt)
     itr took 4ms
     tail rec took 3ms
     foreach took 11ms
     itr took 0ms
 
-    scala> org.sblaj.ml.Blah.blah(1e7.toInt)
+    scala> org.sblaj.ml.IterationTiming.timeIterations(1e7.toInt)
     itr took 34ms
     tail rec took 6ms
     foreach took 11ms
     itr took 6ms
 
-    scala> org.sblaj.ml.Blah.blah(1e8.toInt)
+    scala> org.sblaj.ml.IterationTiming.timeIterations(1e8.toInt)
     itr took 79ms
     tail rec took 73ms
     foreach took 100ms
@@ -125,7 +125,7 @@ faster, but the relative comparison was different:
 One standalone run with n=5e8, the warmed
 up iterative version was somewhat faster:
 
-    bash-3.2$ scala -J-Xmx4G -cp ml/target/scala-2.9.1/classes/ org.sblaj.ml.Blah 500000000
+    bash-3.2$ scala -J-Xmx4G -cp ml/target/scala-2.9.1/classes/ org.sblaj.ml.IterationTiming 500000000
     itr took 3049ms
     tail rec took 1171ms
     foreach took 515ms
@@ -139,7 +139,7 @@ I thought that maybe the only reason the foreach was able to keep is because the
 its overhead and inline that code very quickly.  Indeed, turning off the hotspot compiler `-Xint` did change the runtime, though not quite
 as expected:
 
-    bash-3.2$ scala -J-Xint -J-Xmx1G -cp ml/target/scala-2.9.1/classes/ org.sblaj.ml.Blah 100000000
+    bash-3.2$ scala -J-Xint -J-Xmx1G -cp ml/target/scala-2.9.1/classes/ org.sblaj.ml.IterationTiming 100000000
     itr took 1380ms
     tail rec took 1499ms
     foreach took 2407ms
@@ -152,7 +152,7 @@ The foreach wasn't another function call!  This was a real shock.  But, i also h
 tail-recursive function was still creating a function call.  If that was really the case, there is no way it would have comparable
 performance. 
 
-    bash-3.2$ javap -classpath ml/target/scala-2.9.1/classes -c org.sblaj.ml.Blah$
+    bash-3.2$ javap -classpath ml/target/scala-2.9.1/classes -c org.sblaj.ml.IterationTiming$
     ...
        91:  invokespecial   #55; //Method tailRecItr$1:([III)V
     ...
@@ -160,7 +160,7 @@ performance.
 I'm no expert on javap, but that sure looks like a method call.  And the method its calling doesn't seem to exist.
 
 However, after some digging, I discovered that scalac already [optimizes foreach over Ranges](https://github.com/scala/scala/commit/4cfc633fc6).
-So, all of that worrying for nothing, foreach was a bit slower, but not massively so.  Maybe good enough in a lot of cases.  Some more 
+So, all of that worrying for nothing; `foreach` was a bit slower, but not massively so.  Its probably good enough in a lot of cases.  Some more
 reading on the topic:
 
 * http://ochafik.com/blog/?p=806
