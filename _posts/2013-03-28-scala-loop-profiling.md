@@ -24,7 +24,7 @@ So I wanted to compare the direct while loop to two alternatives:
 
 All of these experiments are with Scala 2.9.1-1, on a MacbookPro 2.4 GHz Intel Core i7, 8 GB 1333 MHz DDR3.
 
-== My Experiments ==
+## My Experiments
 
 The first thing I wanted to profile was a very simple loop over a giant array.  I made a couple of modifications along
 the way, which I'll discuss below, but here's code I ended up with at the end.  (I added the `array.foreach` towards the
@@ -133,7 +133,7 @@ up iterative version was somewhat faster:
 
 The iterative version was faster, but not by very much.  I was puzzled.
 
-== JIT,javap, and scalac ==
+## JIT,javap, and scalac
 
 I thought that maybe the only reason the foreach was able to keep is because the hotspot compiler was able to eliminate
 its overhead and inline that code very quickly.  Indeed, turning off the hotspot compiler `-Xint` did change the runtime, though not quite
@@ -186,7 +186,7 @@ And without the JIT, it was devastatingly slow:
 	itr took 14ms
 	array foreach took 750ms
 
-= Summary = 
+# Summary
 
 * Never use the REPL for timing experiments!  Its extremely misleading, not representative of the way you'll really use your code.  Its ok
 to invoke code from within the REPL when timing, but be sure the code is defined in a file that is compiled normally.
