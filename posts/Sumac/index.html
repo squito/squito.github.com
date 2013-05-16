@@ -3,7 +3,7 @@
 <head>
   <meta http-equiv="content-type" content="text/html; charset=utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Understanding Collapsed Gibbs Sampling</title>
+  <title>Sumac</title>
   <meta name="author" content="imran" />
   <meta name="description" content="imran's blog" />
   <link href='http://fonts.googleapis.com/css?family=Raleway:400,500,800' rel='stylesheet' type='text/css'>
@@ -96,22 +96,45 @@
 
 <header class="big">
   <h1>
-  <a href="/posts/understanding-collapsed-gibbs-sampling">Understanding Collapsed Gibbs Sampling</a>
+  <a href="/posts/Sumac">Sumac</a>
   </h1>
-  <span> Nov 18, 2012 </span>
+  <span> May 15, 2013 </span>
 </header>
 
 <div class="content">
   <div id="post">
     <div class="body">
-      <p>Great post on the LingPipe Blog giving a thorough <a href="http://lingpipe-blog.com/2010/07/13/collapsed-gibbs-sampling-for-lda-bayesian-naive-bayes/">derivation of Collapsed Gibbs Sampling For LDA</a>.  Even if you can&rsquo;t make it through all the integrals, just reading through the derivation gave me a much better sense of what was going on in Collapsed Gibbs Sampling.</p>
+      <p>I&rsquo;m really happy that <a href="http://blog.quantifind.com">Quantifind</a> has just officially released <a href="https://github.com/quantifind/Sumac">Sumac</a>
+ a library I&rsquo;ve been working on a for a while.  Its great to take the work that I&rsquo;ve done and share it with everyone, and I&rsquo;m thankful
+to Quantifind for letting me do that.  The company has already let me make contributions to <a href="https://github.com/mesos/spark">Spark</a>, but
+somehow its more gratifying to release a project where I&rsquo;ve been the lead developer.</p>
+
+<p>I know, I know, Sumac is really tiny, its just a library for parsing command line options; its no monumental contribution to the advancement
+of mankind.<br/>
+But, I do think its a great tool.  Though argument parsing is an old problem, I really believe Sumac is an improvement over most systems out there.  Everything
+else I&rsquo;ve seen requires so much boilerplate and configuration.  Sumac replaces all of that with a simple API.  As a developer,
+I&rsquo;m always looking for ways to remove the tedium and simplify my toolset, whether its learning new deisgn patterns or writing tools that provide
+general solutions.  Of course, most of the time I can&rsquo;t get come up with a better solution, or I don&rsquo;t have time to implement one, but I&rsquo;m glad I
+can share the solutions that I did come up with.</p>
+
+<p>The code is well-written.  That&rsquo;s a scary thing to say when releasing code to the world-at-large.  In fact, most of <a href="http://github.com/squito">the code I share on github</a>
+is so horribly written that I&rsquo;m pretty embarassed of it.  But I think I took the time to design Sumac well &mdash; there isn&rsquo;t any crazy spaghetti code,
+there is a clear separation of components, and its well tested &amp; documented.  Its a library that we can continue to build &amp; improve upon.</p>
+
+<p>In fact, I&rsquo;m really hoping that by open-sourcing Sumac, it can keep growing from the contributions of others.  We&rsquo;ve released a library we&rsquo;re proud of,
+but we know there is a so much more that could still be added to it.  Any contributions from the community would be a huge help &mdash; everything from
+finding cool new approaches that are only possible with Scala 2.10, to just submitting bug reports on the existing code.</p>
+
+<p>So try Sumac out, I&rsquo;d love to hear any feedback!</p>
 
     </div>
 
     <h4 class='tagged-title'>Tagged:</h4>
     <ul id="post_tags" class='tag-list'>
     
-      <li class='tag'><a href="/tag/ML">ML</a></li>
+      <li class='tag'><a href="/tag/Scala">Scala</a></li>
+    
+      <li class='tag'><a href="/tag/Open Source">Open Source</a></li>
     
     </ul>
     <div class="divide">
@@ -160,7 +183,7 @@
     <h1>Comments</h1>
 <div id="disqus_thread"></div>
 <script type="text/javascript">
-  window.disqus_identifier = "/posts/understanding-collapsed-gibbs-sampling";
+  window.disqus_identifier = "/posts/Sumac";
 </script>
 <script type="text/javascript">
     /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
