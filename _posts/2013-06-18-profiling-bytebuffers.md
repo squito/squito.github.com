@@ -17,13 +17,13 @@ the cost of serializing & deserializing data, but
 the idea is still in the very early stages.)  Since I'm interested in performant code for numerical computation, I decided
 to start with a really simple task of summing an array of floats vs. summing floats that are read out of a ByteBuffer.  It
 sounds simple enough, but I actually learned a ton about profiling, the JIT, and the cost of using interfaces.  I'll go into
-more detail on some of the biggest puzzles & surprises, but here's the key take-aways:
+more detail on some of the biggest puzzles & surprises, but here are the key take-aways:
 
 * Thyme is a great tool and its super easy to use.  I also really enjoyed Rex's [slides from Scala Days 2013](https://speakerdeck.com/ichoran/designing-for-performance-scala-days-2013).
   
 * Reading from a `FloatBuffer` instead of an `Array[Float]` takes roughly twice as long.  This may sound terrible, but this
 is still tons faster than any data structures in the collections library.  Furthermore, it could be insignificant if you're doing any
-real calculations -- the difference dropped to 15% if I took the sum of the logs, instead of just the sum.
+real calculations -- the difference dropped to 15% if I added a call to `math.log()` on each float.
 * Using interfaces has some tricky performance penalties because of the optimizations done by the JIT.  (Rex mentions
 this on slide 28).  What I learned is that hiding one implementation behind an interface doesn't have any performance impact -- but
 there is a big impact if you have multiple implementations that are in active use.  I didn't understand this at first, and got 
@@ -53,9 +53,9 @@ Thyme gave me a nice report on each version, that was simple to read and full of
 	result = 1.19841533E14
 
 Reading from an array of floats was the best, with the FloatBuffer & ByteBuffer coming in at 2x & 5x respectively.  Getting these
-results was so easy, I started playing around with lots of others, like taking the sum of the logs instead of the sum, or wrapping
-the ByteBuffers with a class with an `apply` and `update` method to make them more Scala-friendly.  Then I thought I could at least
-clean up the repitition of those ugly while loops by creating a common interfae, and that's where I got myself into trouble.
+results was so easy, I started playing around with lots of others tasks, like taking the sum of the logs instead of the sum, or wrapping
+the ByteBuffers with a wrapper class to make them more Scala-friendly.  Then I thought I could at least
+clean up the repitition of those ugly while loops by creating a common interface, and that's where I got myself into trouble.
 
 ## Profiling Interfaces
 
@@ -73,7 +73,7 @@ I ran the benchmarks, and then my troubles began ...
 What happened?! How come the interface didn't slow down the loop over the array, but it completely destroyed the loop over the byte buffer?
 
 I spent a *lot* of time looking into various theories to explain what was going on.  I did some reading on the JIT, tried to understand the output of 
-`-XX:+PrintCompilation`, spent a long figuring out how to get `-XX:+PrintInlining` to work (you have to add `-XX:+UnlockDiagnosticVMOptions`),
+`-XX:+PrintCompilation`, spent a long time figuring out how to get `-XX:+PrintInlining` to work (you have to add `-XX:+UnlockDiagnosticVMOptions`),
 explored lots of different ways that Thyme lets you profile code, and tried all sorts of permutations of my code.  I had basically given up,
 and was just putting together some clean examples to ask for help from Rex himself, when I stumbled upon the solution.
 
@@ -85,8 +85,8 @@ dynamic dispatch.
 However, the JIT is **not** whole-program analysis.  It just knows about code that has been run so far in the active JVM. So
 when I ran my first benchmark on the array-wrapper, as far as the JIT was concerned, there *was* just one implementation, so it could remove
 the interface completely.  Then the JIT needed to *undo* its elimination of the interface for subsequent benchmarks, and put dynamic dispatch
-back in.  Indeed, if I ran the array-wrapper benchmark again, after the other benchmarks, its speed drops like the others (but a direct
-while loop on the array keeps the original performance, even if its run later on.)
+back in.  Indeed, if I ran the array-wrapper benchmark again, after the other benchmarks, its speed drops like the others.  (A direct
+while loop on the array keeps the original performance, regardless of what order its run in.)
 
 So what does this mean for running benchmarks that compare multiple implementations of an interface?  _You have to know whether a JVM will
 only have one active implementation, or if multiple implementations will live side-by-side_.
@@ -97,7 +97,7 @@ up *all* interfaces before running your test.  TODO: some notes on whether or no
 then you *cannot* profile both in the same JVM.  Even if you warm up both implementations first, the results will be very misleading, because
 they will include the cost of dynamic dispatch, which won't exist in actual use.  I suspect the relative order of the implementations won't change,
 but the magnitude of the difference could be dramatically different, depending on what percentage of the cost is dynamic dispatch.  For example,
-in the my simple test case of summing floats, the difference goes from 2x to a few percent.
+in my simple test case of summing floats, the difference goes from 2x to a few percent.
 
 
 ## Reference
