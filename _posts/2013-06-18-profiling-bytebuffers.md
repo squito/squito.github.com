@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Benchmarking ByteBuffers with Thyme
-published: false
+published: true
 tags:
     - Scala
     - tech
@@ -37,36 +37,8 @@ view of the byte buffer, and then call `fb.get(idx)`, so I tried both.  I wanted
 reading the floats, not method calls or closures
 turned into anonymous classes, etc., so I wrote my benchmark as ugly while loops.  
 
-    val n = 1e7.toInt
-    val (rawArray, rawBB, rawFloatBuf) = initArrays(n)
-    println("result = " + th.pbench({
-      var idx = 0
-      var sum = 0f
-      while(idx < n) {
-        sum += rawArray(idx)
-        idx += 1
-      }
-      sum
-    }, title="raw arrays"))
-    println("result = " + th.pbench({
-      var idx = 0
-      var sum = 0f
-      while(idx < n) {
-        sum += rawBB.getFloat(idx * 4)
-        idx += 1
-      }
-      sum
-    }, title="byte buffer"))
-    println("result = " + th.pbench({
-      var idx = 0
-      var sum = 0f
-      while(idx < n) {
-        sum += rawFloatBuf.get(idx)
-        idx += 1
-      }
-      sum
-    }, title="float buffer"))
 
+<script src="https://gist.github.com/squito/5820049.js"></script>
 
 Thyme gave me a nice report on each version, that was simple to read and full of information (even confidence intervals!):
 
@@ -92,29 +64,7 @@ well give those wrappers classes a common interface, so I only needed to write m
 with just `apply`, `update`, and `size`, all I needed in my while loops.  I knew there was a good chance this would slow my code down, but
 I figured every approach would probably suffer the same effect.
 
-    trait ArrayLike[@specialized T] {
-      def apply(idx: Int) : T
-      def update(idx: Int, value: T)
-      def length: Int
-      def size: Int = length
-    }
-
-    def sumArrayLike(arr: ArrayLike[Float]): Float = {
-      var idx = 0
-      var sum = 0f
-      while(idx < arr.length) {
-        sum += arr(idx)
-        idx += 1
-      }
-      sum
-    }
-
-    val n = 1e7.toInt
-    val (_, wrapped, buf, arrBuf) = initArrays(n) // now this returns classes that implement ArrayLike
-    println("result = " + th.pbench(sumArrayLike(wrapped), title="wrapped array"))
-    println("result = " + th.pbench(sumArrayLike(arrBuf), title="float array wrapped in FloatBuffer"))
-    println("result = " + th.pbench(sumArrayLike(buf), title="byte array wrapped in FloatBuffer"))
-
+<script src="https://gist.github.com/squito/5820134.js"></script>
 
 I ran the benchmarks, and then my troubles began ...
 
@@ -168,42 +118,9 @@ Just for completeness, I figured I should try out the common alternatives to my 
 the method into the `ArrayLike` interface, and also "enriching" the classes with the method via Type Classes.  With both methods, I had a choice
 of where to put the implementation.  Should I put the implementation directly in the `ArrayLike` trait? Or should I make `sum` an abstract method,
 and provide a definition specific to each class?  I won't repeat all those while loops again here, but I want to at least show the signatures for
-the Type Class version, as that is probably unfamiliar to more readers:
+the Type Class version, as that is probably unfamiliar to some readers:
 
-    trait ArraySummer[-T] {
-      def sum(t: T): Float
-    }
-
-    /** one TypeClass per concrete implementation */
-    object SpecificSummers {
-      implicit object SimpleWrappedFloatArraySummer extends ArraySummer[SimpleWrappedFloatArray] {
-        def sum(arr: SimpleWrappedFloatArray): Float = {
-          ...
-        }
-      }
-
-      implicit object FloatArrayAsBufferSummer extends ArraySummer[FloatArrayAsBuffer] {
-        def sum(arr: FloatArrayAsBuffer): Float = {
-          ...
-        }
-      }
-
-      implicit object FloatArraySliceSummer extends ArraySummer[FloatArraySlice] {
-        def sum(arr: FloatArraySlice): Float = {
-          ...
-        }
-      }
-    }
-
-    /** one TypeClass for all implementations of ArrayLike[Float] */
-    object GenericSummers {
-      implicit object ArrayLikeSummer extends ArraySummer[ArrayLike[Float]] {
-        def sum(arr: ArrayLike[Float]): Float = {
-          ...
-        }
-      }
-
-    }
+<script src="https://gist.github.com/squito/5820138.js"></script>
 
 There was a huge difference between putting the implementations in `ArrayLike` versus having one implementation per concrete class.  This makes
 a lot of sense -- by putting one implementation per concrete class, I've moved dynamic dispatch out of the inner loop.  The 100 ms performance
