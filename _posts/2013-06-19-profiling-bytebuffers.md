@@ -29,6 +29,13 @@ there is a big impact if you have multiple implementations that are in active us
 *really* confusing results from my micro-benchmarks -- more
 on that below. 
 
+In the end I ran tests for both ints & floats.  The final benchmarks are summarized in these graphs.  I'll explain the benchmarks
+for floats in more, but the same applies to both cases.
+
+<img src="../../images/int_sum_profile.jpg"/>
+
+<img src="../../images/float_sum_profile.jpg"/>
+
 ## The Experiment
 
 The basic test was very simple -- compare the time required to sum 10 million floats stored in an array vs. 10 million floats
