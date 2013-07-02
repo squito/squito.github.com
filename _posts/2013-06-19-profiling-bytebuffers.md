@@ -8,6 +8,9 @@ tags:
     - profiling
 ---
 
+**UPDATE 7-1-2013** Andre Silva made a great suggestion to try direct byte buffers (and he even sent a [pull request](https://github.com/squito/oleander/pull/1)).
+There is a big improvement, so I've updated my results below.
+
 I just heard about Rex Kerr's new library for micro-benchmarks in Scala, [Thyme](https://github.com/Ichoran/thyme), and I
  thought I could give it a try
 exploring some questions I've always had about the performance of Java's ByteBuffers.  (I got interested in this idea
@@ -19,10 +22,17 @@ sounds simple enough, but I actually learned a ton about profiling, the JIT, and
 more detail on some of the biggest puzzles & surprises, but here are the key take-aways:
 
 * Thyme is a great tool and its super easy to use.  I also really enjoyed Rex's [slides from Scala Days 2013](https://speakerdeck.com/ichoran/designing-for-performance-scala-days-2013).
+
+* Reading ints & floats from [view buffers](http://docs.oracle.com/javase/6/docs/api/java/nio/ByteBuffer.html#views) is faster than calling
+`ByteBuffer.getFloat` / `ByteBuffer.getInt` directly.
+
+* Reading from direct byte buffers is much faster than reading from normal (on-heap) byte buffers -- the performance is very close to normal
+arrays.  (The rest of the post only considers normal byte buffers)
   
-* Reading from a `FloatBuffer` instead of an `Array[Float]` takes roughly twice as long.  This may sound terrible, but this
+* Reading from an on-heap `FloatBuffer` instead of an `Array[Float]` takes roughly twice as long.  This may sound terrible, but this
 is still tons faster than any data structures in the collections library.  Furthermore, it could be insignificant if you're doing any
 real calculations -- the difference dropped to 15% if I added a call to `math.log()` on each float.
+
 * Using interfaces has some tricky performance penalties because of the optimizations done by the JIT.  (Rex mentions
 this on slide 28).  What I learned is that hiding one implementation behind an interface doesn't have any performance impact -- but
 there is a big impact if you have multiple implementations that are in active use.  I didn't understand this at first, and got 
@@ -30,7 +40,8 @@ there is a big impact if you have multiple implementations that are in active us
 on that below. 
 
 In the end I ran tests for both ints & floats.  The final benchmarks are summarized in these graphs.  I'll explain the benchmarks
-for floats in more, but the same applies to both cases.
+for floats in more, but the same applies to both cases.  Again, from here out, I'm only talking about reading floats from normal,
+on-heap byte buffers.
 
 <img src="../../images/int_sum_profile.jpg"/>
 
