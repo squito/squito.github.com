@@ -116,7 +116,7 @@ Similarly, I discovered the structure for classes, and figured out where the def
 
     ClassDef(modifiers, name, _, Template(parents, _, defs))
 
-Though I didn't learn what all the parts where, I knew enough for what I needed.  Now I could put the pieces together:
+Though I didn't learn what all the parts were, I knew enough for what I needed.  Now I could put the pieces together:
 
     class FillTraitDefs extends StaticAnnotation {
       def macroTransform(annottees: Any*) = macro SimpleTraitImpl.addDefs
