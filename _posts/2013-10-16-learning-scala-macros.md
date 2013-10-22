@@ -15,17 +15,11 @@ Scala Macros are powerful, but very daunting.  I only had time to quickly poke a
 I had a specific goal in mind -- I wanted my macro to supply definitions for abstract methods.  More specifically, the macro should supply definitions for
 *getters* of 'Int's and 'Float's, to read out of a 'ByteBuffer'.  Eg., given this:
 
-    trait A {
-      def x: Int
-      def y: Float
-    }
+<script src="https://gist.github.com/squito/7094987.js?file=trait.scala"></script>
 
 My macro should generate the equivalent of
 
-    class B(bb: ByteBuffer) extends A {
-      def x = bb.getInt(0)
-      def y = bb.getFloat(4)
-    }
+<script src="https://gist.github.com/squito/7094987.js?file=goalClass.scala"></script>
 
 The idea seemed pretty simple, but I knew there would be a lot to learn about macros before I could make it happen.
 
@@ -68,28 +62,12 @@ I was getting really frustrated, but I felt I had put in too much effort to give
 
 then paste in
 
-
-    import language.experimental.macros
-    import reflect.macros.Context
-    import scala.annotation.StaticAnnotation
-    import scala.reflect.runtime.{universe => ru}
+<script src="https://gist.github.com/squito/7094987.js?file=replImports.scala"></script>
 
 
 For example, here's the way I'd discover some basic trees:
 
-
-    // AST of defining a val
-    scala> ru.showRaw{ru.reify{val x = 5}}
-    res1: String = Expr(Block(List(ValDef(Modifiers(), newTermName("x"), TypeTree(), Literal(Constant(5)))), Literal(Constant(()))))
-    
-    // AST for defining a class
-    scala> ru.showRaw{ru.reify{class B}}
-    res2: String = Expr(Block(List(ClassDef(Modifiers(), newTypeName("B"), List(), Template(List(Ident(newTypeName("AnyRef"))), emptyValDef, List(DefDef(Modifiers(), nme.CONSTRUCTOR, List(), List(List()), TypeTree(), Block(List(Apply(Select(Super(This(tpnme.EMPTY), tpnme.EMPTY), nme.CONSTRUCTOR), List())), Literal(Constant(())))))))), Literal(Constant(()))))
- 
-    // AST for defining a class with a templated parent -- but showRaw is wrong here!
-    scala> ru.showRaw{ru.reify{class B extends collection.mutable.Seq[String]}}
-    res7: String = Expr(Block(List(ClassDef(Modifiers(), newTypeName("B"), List(), Template(List(AppliedTypeTree(Ident(scala.collection.mutable.Seq), List(Select(Ident(scala.Predef), newTypeName("String"))))), emptyValDef, List(DefDef(Modifiers(), nme.CONSTRUCTOR, List(), List(List()), TypeTree(), Block(List(Apply(Select(Super(This(tpnme.EMPTY), tpnme.EMPTY), nme.CONSTRUCTOR), List())), Literal(Constant(())))))))), Literal(Constant(()))))
-
+<script src="https://gist.github.com/squito/7094987.js?file=showRaw.scala"></script>
 
 (Note that in the last example, showRaw actually gives an incorrect tree -- we need to use `scalac` to get the right one.)
 
@@ -100,17 +78,11 @@ Now I was ready to start making my macro.  First of all, I learned that in order
 To start slowly, I wanted to see if my macro could add definitions to a class, where I just hardcoded the missing methods.  Specifically, I wanted this to work:
 
     
-    trait SimpleTrait {
-      def x: Int
-      def y: Float
-    }
-    
-    @FillTraitDefs class Foo extends SimpleTrait {}
+<script src="https://gist.github.com/squito/7094987.js?file=annotationsGoal.scala"></script>
 
 Without the macro, that code gives a compiler error, because `Foo` does not implement `x` or `y`.  I made `@FillInTraitDefs` provide the missing definitions with a macro.  First, I found the AST for the defs I wanted to add (I didn't particularly care what `x` or `y` did).
 
-    scala> ru.showRaw{ru.reify{def x = 5}}
-    res11: String = Expr(Block(List(DefDef(Modifiers(), newTermName("x"), List(), List(), TypeTree(), Literal(Constant(5)))), Literal(Constant(()))))
+<script src="https://gist.github.com/squito/7094987.js?file=reify.scala"></script>
 
 Similarly, I discovered the structure for classes, and figured out where the defs go:
 
@@ -118,43 +90,11 @@ Similarly, I discovered the structure for classes, and figured out where the def
 
 Though I didn't learn what all the parts were, I knew enough for what I needed.  Now I could put the pieces together:
 
-    class FillTraitDefs extends StaticAnnotation {
-      def macroTransform(annottees: Any*) = macro SimpleTraitImpl.addDefs
-    }
-
-    object SimpleTraitImpl {
-
-      def addDefs(c: Context)(annottees: c.Expr[Any]*): c.Expr[Any] = {
-	import c.universe._
-	val inputs = annottees.map(_.tree).toList
-	val newDefDefs = List(
-	  DefDef(Modifiers(), newTermName("x"), List(), List(), TypeTree(), Literal(Constant(5))),
-	  DefDef(Modifiers(), newTermName("y"), List(), List(), TypeTree(), Literal(Constant(7.0f)))
-	)
-	val modDefs = inputs map {tree => tree match {
-	  case ClassDef(mods, name, something, template) =>
-	    val q = template match {
-	      case Template(superMaybe, emptyValDef, defs) =>
-		Template(superMaybe, emptyValDef, defs ++ newDefDefs)
-	      case y =>
-		y
-	    }
-	    ClassDef(mods, name, something, q)
-	  case x =>
-	    x
-	}}
-	val result = c.Expr(Block(modDefs, Literal(Constant())))
-	result
-      }
-    }
+<script src="https://gist.github.com/squito/7094987.js?file=fullMacro.scala"></script>
 
 The next step was to have my annotation add the trait as a parent in a macro.  Sounds simple, but I had a really hard time figuring out the syntax for declaring a parent class -- because I was relying on `showRaw`.  After I switched to using `scalac` to show me the AST, I had no trouble at all.  The tree for adding `com.imranrashid.oleander.macros.SimpleTrait` as a parent was:
 
-     val addedTrait = Select(Select(Select(
-       Select(Ident(newTermName("com")), newTermName("imranrashid")),
-       newTermName("oleander")),newTermName("macros")),
-       newTypeName("SimpleTrait"))
-
+<script src="https://gist.github.com/squito/7094987.js?file=addedTrait.scala"></script>
 
 Everything seemed to be working pretty well, so I put together [a few unit tests](https://github.com/squito/learn_macros/blob/master/macrotests/src/test/scala/com/imranrashid/oleander/macros/SimpleTraitFillInTest.scala#L8) to confirm it worked as I expected.  The tests confirmed that I could add defs to my classes, make them extend a trait, and not lose any of their existing definitions.
 
@@ -164,28 +104,23 @@ I was feeling pretty good now that I had all this working.  But, those ASTs were
 
 First, to get quasiquotes working in the repl, I added one more import for implicit conversions:  
 
-    import language.experimental.macros
-    import reflect.macros.Context
-    import scala.annotation.StaticAnnotation
-    import scala.reflect.runtime.{universe => ru}
-    import ru._
+<script src="https://gist.github.com/squito/7094987.js?file=quasiReplImports.scala"></script>
 
 Now I could try out generating trees in the repl with quasiquotes:
 
-    scala> q"def x = 5"
-    res3: reflect.runtime.universe.DefDef = def x = 5
+<script src="https://gist.github.com/squito/7094987.js?file=quasiReplImports.scala"></script>
 
 Not bad!  That was pretty easy.  In fact, you can even use quasiquotes to *deconstruct* trees.  It takes a little while to get the syntax right, but the best way to learn is to play around in the repl.  For example, to find the syntax for multiple traits, first I created an example tree:
 
-    val classdef = q"""class Foo extends A with B with C {}"""
+<script src="https://gist.github.com/squito/7094987.js?file=quasiClassDef.scala"></script>
 
 and after some trial and I error, I found I could pull it apart with:
 
-    val q"class $cname extends $parent with ..$traits { ..$body }" = classdef
+<script src="https://gist.github.com/squito/7094987.js?file=quasiClassDefUnapply.scala"></script>
 
 This was fantastic!  Remember the headache of figuring out how to declare a parent class when we were building the trees by hand?  Now I could just let quasiquotes do it for me!
 
-     val q"class $ignore extends $addedType" = q"class Foo extends com.imranrashid.oleander.macros.SimpleTrait"
+<script src="https://gist.github.com/squito/7094987.js?file=quasiParentClass.scala"></script>
 
 I'm glancing over a lot of details here, but hopefully this will help you make some sense of the [very terse documentation](http://docs.scala-lang.org/overviews/macros/quasiquotes.html).  There are a few gotchas; in particular, with Lists of trees, you must
 
@@ -198,10 +133,7 @@ both of these are hinted at in the docs on quasiquotes and the [linked gist](htt
 
 Even if you don't use quasiquotes, you can potentially generate some parts of the AST using reify.  But again, it requires you to know some internals of how ASTs get wrapped up by reify before you can use them.  For example, instead of specifying our trees for the new `DefDef`s manually, we could have done this:
 
-    val newDefDefs = reify {
-      def x = 5
-      def y = 7.0f
-    }.tree match { case Block(defs, _) => defs}
+<script src="https://gist.github.com/squito/7094987.js?file=reifyDefDefs.scala"></script>
 
 The extra `.tree` and pattern match are necesary because `reify` wraps the defs into an `Expr(Block(...))`.  Simple once you know about it, but really confusing before you know what to look for.  By the time I figured this out, I already learned quasiquotes, so I just stuck with them.  Also, quasiquotes make it easier to pattern match against trees, which you can't do with just `reify`.  Still, its up to you which way you would prefer to generate trees.
 
