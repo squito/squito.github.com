@@ -23,7 +23,7 @@ My macro should generate the equivalent of
 
 The idea seemed pretty simple, but I knew there would be a lot to learn about macros before I could make it happen.
 
-(This idea is related to another project of mine, [Oleander], which will read data directly from ByteBuffers for a variety of reasons.  However, that's not nearly ready for real use yet.  For now, this is just a way for me to learn.)
+(This idea is related to another project of mine, [Oleander](https://github.com/squito/oleander), which will read data directly from ByteBuffers for a variety of reasons.  However, that's not nearly ready for real use yet.  For now, this is just a way for me to learn.)
 
 **WARNING** This is *not* a tutorial.  I'm not an expert by any means.  But I did get macros to do what I wanted in the end, and I even put the working examples into a [repo on github](https://github.com/squito/learn_macros) with the full sbt build configuration.  I do think you will learn a lot (and save a lot of time) if you read my advice on Learning ASTs and start from the example repo.
 
