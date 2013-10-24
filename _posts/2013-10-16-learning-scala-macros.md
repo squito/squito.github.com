@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Learning Scala Macros
-published: false
+published: true
 tags:
     - Scala
     - Macros
