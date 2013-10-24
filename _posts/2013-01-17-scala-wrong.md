@@ -6,7 +6,7 @@ tags:
     - Scala
 ---
 
-I've been a Scala developer for just over half a year now.  Scala is amazing; coming frmo a background in
+I've been a Scala developer for just over half a year now.  Scala is amazing; coming from a background in
 Java, it solves so many of the issues that aggravated me for years.  But, because its still compiled
 to the JVM, I didn't need to start completely from scratch; I can still draw on all the existing Java
 libraries, plus all the tools I'm used to using for debugging and diagnosing my Java programs.  I'd have
