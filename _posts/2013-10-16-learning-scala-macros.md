@@ -127,7 +127,7 @@ I'm glancing over a lot of details here, but hopefully this will help you make s
 1. cast everything to `List[Tree]`
 2. after merging lists of trees together, call `.toList`
 
-both of these are hinted at in the docs on quasiquotes and the [linked gist](https://gist.github.com/anonymous/7ab617d054f28d68901b).  Hopefully these two rules, plus the [example code](https://github.com/squito/learn_macros/blob/master/macros/src/main/scala/com/imranrashid/oleander/macros/FillTraitDefs.scala#L78) make it more clear.
+both of these are hinted at in the docs on quasiquotes and the [linked gist](https://gist.github.com/anonymous/7ab617d054f28d68901b), but aren't fully explained .  I hope these two rules, plus [my example code](https://github.com/squito/learn_macros/blob/master/macros/src/main/scala/com/imranrashid/oleander/macros/FillTraitDefs.scala#L78) make it more clear.
 
 ### Generating ASTs with reify
 
