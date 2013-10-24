@@ -53,7 +53,7 @@ I was getting really frustrated, but I felt I had put in too much effort to give
 ### Learning ASTs
 
 * The [academic paper on quasiquotes](http://infoscience.epfl.ch/record/185242/files/QuasiquotesForScala.pdf) was quite useful; it actually has some nice simple examples, you only need to read the first 4 pages.  It helped me learn about both Quasiquotes, and ASTs in general
-* Probably the most useful thing I learned was to **not** rely on `showRaw` as the only way to learn ASTs.  `showRaw` is great because it's so easy to use, but sometimes the tree it shows you is not the tree you want.  Sometimes, if you copy those trees verbatim, and you just get some obscure compiler error.
+* Probably the most useful thing I learned was to **not** rely on `showRaw` as the only way to learn ASTs.  `showRaw` is great because it's so easy to use, but sometimes the tree it shows you is not the tree you want.  Sometimes, if you copy those trees verbatim, you just get some obscure compiler error.
 * The **foolproof** way (in my experience) to get the correct AST is to ask `scalac` to do it for you, as [Eugene Burmako explains in this SO answer](http://stackoverflow.com/questions/14790115/where-can-i-learn-about-constructing-asts-for-scala-macros/14795999#14795999).  So I'd put some example code in a .scala file, and then run 
 `scalac -Xplugin macro-paradise_2.10.2-2.0.0-SNAPSHOT.jar -deprecation -Xprint:parser -Ystop-after:parser -Yshow-trees-compact *.scala`  
 
