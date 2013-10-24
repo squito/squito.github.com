@@ -157,7 +157,7 @@ But as it turned out, I still had a lot to learn.</p>
 <li>Probably the most useful thing I learned was to <strong>not</strong> rely on <code>showRaw</code> as the only way to learn ASTs.  <code>showRaw</code> is great because it&rsquo;s so easy to use, but sometimes the tree it shows you is not the tree you want.  Sometimes, if you copy those trees verbatim, you just get some obscure compiler error.</li>
 <li><p>The <strong>foolproof</strong> way (in my experience) to get the correct AST is to ask <code>scalac</code> to do it for you, as <a href="http://stackoverflow.com/questions/14790115/where-can-i-learn-about-constructing-asts-for-scala-macros/14795999#14795999">Eugene Burmako explains in this SO answer</a>.  So I&rsquo;d put some example code in a .scala file, and then run
 <code>scalac -Xplugin macro-paradise_2.10.2-2.0.0-SNAPSHOT.jar -deprecation -Xprint:parser -Ystop-after:parser -Yshow-trees-compact *.scala</code></p></li>
-<li><p>Though I no longer relied exclusively on <code>showRaw</code> to learn ASTs, I still tried it out first, especially after I learned how to use it quickly in the repl.  (If something went wrong, I&rsquo;d fall back on <code>scalac</code>.)  to start a repl session with the compiler plugin &amp; the appropriate imports, I&rsquo;d run
+<li><p>Though I no longer relied exclusively on <code>showRaw</code> to learn ASTs, I still tried it out first, especially after I learned how to use it quickly in the repl.  (If something went wrong, I&rsquo;d fall back on <code>scalac</code>.)  To start a repl session with the compiler plugin &amp; the appropriate imports, I&rsquo;d run
 <code>scala -Xplugin macro-paradise_2.10.2-2.0.0-SNAPSHOT.jar</code></p></li>
 </ul>
 
