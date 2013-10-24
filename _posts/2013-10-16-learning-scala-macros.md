@@ -57,7 +57,7 @@ I was getting really frustrated, but I felt I had put in too much effort to give
 * The **foolproof** way (in my experience) to get the correct AST is to ask `scalac` to do it for you, as [Eugene Burmako explains in this SO answer](http://stackoverflow.com/questions/14790115/where-can-i-learn-about-constructing-asts-for-scala-macros/14795999#14795999).  So I'd put some example code in a .scala file, and then run 
 `scalac -Xplugin macro-paradise_2.10.2-2.0.0-SNAPSHOT.jar -deprecation -Xprint:parser -Ystop-after:parser -Yshow-trees-compact *.scala`  
 
-* Though I no longer relied exclusively on `showRaw` to learn ASTs, I still tried it out first, especially after I learned how to use it quickly in the repl.  (If something went wrong, I'd fall back on `scalac`.)  to start a repl session with the compiler plugin & the appropriate imports, I'd run 
+* Though I no longer relied exclusively on `showRaw` to learn ASTs, I still tried it out first, especially after I learned how to use it quickly in the repl.  (If something went wrong, I'd fall back on `scalac`.)  To start a repl session with the compiler plugin & the appropriate imports, I'd run 
 `scala -Xplugin macro-paradise_2.10.2-2.0.0-SNAPSHOT.jar`
 
 then paste in
