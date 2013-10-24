@@ -53,7 +53,7 @@ I was getting really frustrated, but I felt I had put in too much effort to give
 ### Learning ASTs
 
 * The [academic paper on quasiquotes](http://infoscience.epfl.ch/record/185242/files/QuasiquotesForScala.pdf) was quite useful; it actually has some nice simple examples, you only need to read the first 4 pages.  It helped me learn about both Quasiquotes, and ASTs in general
-* Probably the most useful thing I learned was to **not** rely on `showRaw` as the only way to learn ASTs.  `showRaw` great because its so easy to use, but sometimes the tree it shows you is not the tree you want.  Sometimes, if you copy those trees verbatim, and you just get some obscure compiler error.
+* Probably the most useful thing I learned was to **not** rely on `showRaw` as the only way to learn ASTs.  `showRaw` is great because it's so easy to use, but sometimes the tree it shows you is not the tree you want.  Sometimes, if you copy those trees verbatim, and you just get some obscure compiler error.
 * The **foolproof** way (in my experience) to get the correct AST is to ask `scalac` to do it for you, as [Eugene Burmako explains in this SO answer](http://stackoverflow.com/questions/14790115/where-can-i-learn-about-constructing-asts-for-scala-macros/14795999#14795999).  So I'd put some example code in a .scala file, and then run 
 `scalac -Xplugin macro-paradise_2.10.2-2.0.0-SNAPSHOT.jar -deprecation -Xprint:parser -Ystop-after:parser -Yshow-trees-compact *.scala`  
 
@@ -135,7 +135,7 @@ Even if you don't use quasiquotes, you can potentially generate some parts of th
 
 <script src="https://gist.github.com/squito/7094987.js?file=reifyDefDefs.scala"></script>
 
-The extra `.tree` and pattern match are necesary because `reify` wraps the defs into an `Expr(Block(...))`.  Simple once you know about it, but really confusing before you know what to look for.  By the time I figured this out, I already learned quasiquotes, so I just stuck with them.  Also, quasiquotes make it easier to pattern match against trees, which you can't do with just `reify`.  Still, its up to you which way you would prefer to generate trees.
+The extra `.tree` and pattern match are necesary because `reify` wraps the defs into an `Expr(Block(...))`.  Simple once you know about it, but really confusing before you know what to look for.  By the time I figured this out, I already learned quasiquotes, so I just stuck with them.  Also, quasiquotes make it easier to pattern match against trees, which you can't do with just `reify`.  Still, it's up to you which way you would prefer to generate trees.
 
 ## Next Steps
 
