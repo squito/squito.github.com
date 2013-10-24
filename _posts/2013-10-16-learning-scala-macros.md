@@ -108,7 +108,7 @@ First, to get quasiquotes working in the repl, I added one more import for impli
 
 Now I could try out generating trees in the repl with quasiquotes:
 
-<script src="https://gist.github.com/squito/7094987.js?file=quasiReplImports.scala"></script>
+<script src="https://gist.github.com/squito/7094987.js?file=quasiDefDef.scala"></script>
 
 Not bad!  That was pretty easy.  In fact, you can even use quasiquotes to *deconstruct* trees.  It takes a little while to get the syntax right, but the best way to learn is to play around in the repl.  For example, to find the syntax for multiple traits, first I created an example tree:
 
