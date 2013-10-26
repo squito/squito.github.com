@@ -135,7 +135,7 @@ Eugene Burmako gave me some feedback which made me realize I didn't fully explai
 
 <script src="https://gist.github.com/squito/7156004.js?file=wrongDebug.scala"></script>
 
-Huh?  What's an `Apply`?  How do I make an 'Expr`?
+Huh?  What's an `Apply`?  How do I make an `Expr`?
 
 There is one really small difference between `reify` and quasiquotes.  While quasiquotes returns a `Tree`, `reify` gives you an `Expr`, which "simply wraps a `Tree` and a `TypeTag`" (from the [reflection docs](http://docs.scala-lang.org/overviews/reflection/symbols-trees-types.html)).  So, `Apply` is just a `Tree`.  You can convert a `Tree` into an `Expr` by simply calling `c.Expr`.  So we just need a simple modification to our example, and now its happy:
 
