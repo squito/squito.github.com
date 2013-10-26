@@ -129,6 +129,38 @@ I'm glancing over a lot of details here, but hopefully this will help you make s
 
 both of these are hinted at in the docs on quasiquotes and the [linked gist](https://gist.github.com/anonymous/7ab617d054f28d68901b), but aren't fully explained .  I hope these two rules, plus [my example code](https://github.com/squito/learn_macros/blob/master/macros/src/main/scala/com/imranrashid/oleander/macros/FillTraitDefs.scala#L78) make it more clear.
 
+#### Short Detour: Trees, Exprs, and Quasiquotes
+
+Eugene Burmako gave me some feedback which made me realize I didn't fully explain one of my initial stumbling blocks with quasiquotes.  For a total beginner like me, you might think that quasiquotes are a complete drop-in replacement for `reify`.  If you followed along the tutorial on creating a `debug` macro, you might naively try to translate it to quasiquotes like so:
+
+<script src="https://gist.github.com/squito/7156004.js?file=wrongDebug.scala"></script>
+
+Huh?  What's an `Apply`?  How do I make an 'Expr`?
+
+There is one really small difference between `reify` and quasiquotes.  While quasiquotes returns a `Tree`, `reify` gives you an `Expr`, which "simply wraps a `Tree` and a `TypeTag`" (from the [reflection docs](http://docs.scala-lang.org/overviews/reflection/symbols-trees-types.html)).  So, `Apply` is just a `Tree`.  You can convert a `Tree` into an `Expr` by simply calling `c.Expr`.  So we just need a simple modification to our example, and now its happy:
+
+<script src="https://gist.github.com/squito/7156004.js?file=correctDebugMacro.scala"></script>
+
+And now it works as expected:
+
+<script src="https://gist.github.com/squito/7156004.js?file=useDebug.scala"></script>
+
+Its also worth noting, that you need to do something similar when working with the *inputs* to your macros.  If you are using macro annotations, then you can just call `.tree` on your input.  But if you are using regular macros, note that input also gets wrapped in a `Block`.  This can lead to some confusing errors.  Here's a silly example, with a macro that that extracts the right-hand side of a `val`:
+
+<script src="https://gist.github.com/squito/7156004.js?file=badValDefMacro.scala"></script>
+
+Why did I get that match error?  It wanted a val definition, I gave it a val definition!  But we can look under the covers more closely with `showRaw`.  Quasiquotes expects to deconstruct a tree like this:
+
+<script src="https://gist.github.com/squito/7156004.js?file=quasiValDefTree.scala"></script>
+
+But if we look at the actual input we are passing to the macro:
+
+<script src="https://gist.github.com/squito/7156004.js?file=macroValDefInput.scala"></script>
+
+We see that when calling the macro, our input actually gets wrapped in a `Block(List(...),Literal(Constant()))`.  That is why our match was failing!  Easy enough to handle that, and now our macro works:
+
+<script src="https://gist.github.com/squito/7156004.js?file=correctValDefMacro.scala"></script>
+
 ### Generating ASTs with reify
 
 Even if you don't use quasiquotes, you can potentially generate some parts of the AST using reify.  But again, it requires you to know some internals of how ASTs get wrapped up by reify before you can use them.  For example, instead of specifying our trees for the new `DefDef`s manually, we could have done this:
@@ -139,6 +171,10 @@ The extra `.tree` and pattern match are necesary because `reify` wraps the defs 
 
 ## Next Steps
 
-Now I had macros to fill in method definitions and add in a trait as a parent class.  The only problem was, those methods & trait were constants!  I still need to figure out what the added trait & method definitions should be.  For that, I'd need to dive into [Scala Reflection](http://docs.scala-lang.org/overviews/reflection/overview.html), another new features in Scala 2.10.  This post is already pretty long, though, and I felt just learning the basics of macros is a good start, so I'll save that for another update.  Stay tuned.
+Now I had macros to fill in method definitions and add in a trait as a parent class.  The only problem was, I hard-coded those methods and traits!  I really wanted my macro to work for any trait.  Eg., I wanted it to work for a case like this:
+
+<script src="https://gist.github.com/squito/7094987.js?file=dynamicTraitGoal.scala"></script>
+
+So my macro needed to find all abstract methods in the referenced trait, and provide implementations of them.  For that, I'd need to dive into [Scala Reflection](http://docs.scala-lang.org/overviews/reflection/overview.html), another new features in Scala 2.10.  This post is already pretty long, though, and I felt just learning the basics of macros is a good start, so I'll save that for another update.  Stay tuned.
 
 I hope you've learned something from my experience -- I sure wish I knew some of this at the very beginning.  I've left out a lot of details, but I've tried to focus on the major breakthroughs I made, the things I didn't find elsewhere (or at least, I didn't find right away).  Leave some comments if you found this useful, if you have other tips on learning macros (or if you have any corrections)!
