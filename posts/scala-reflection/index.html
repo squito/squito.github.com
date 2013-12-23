@@ -105,7 +105,7 @@
   <div id="post">
     <div class="body">
       <p>In the <a href="http://imranrashid.com/posts/learning-scala-macros/">first part of this series</a>, I learned how to use Macro Annotations to add a few simple methods to a class, to fill
-in the definition of a trait.  My eventual goal is to be able to take a trait which defines a few basic <code>Int</code> and <code>Float</code> fields,
+in the implementation of a trait.  My eventual goal is to be able to take a trait which defines a few basic <code>Int</code> and <code>Float</code> fields,
 and automatically generate a class that would read those fields from a <code>ByteBuffer</code>.  Eg., given this:</p>
 
 <script src="https://gist.github.com/squito/7094987.js?file=trait.scala"></script>
@@ -117,7 +117,7 @@ and automatically generate a class that would read those fields from a <code>Byt
 
 
 <p>Earlier, I was only able to add the methods for one fixed trait &mdash; not very useful.  If I was
-going to be able to fill in the definitions for any trait, I&rsquo;d need to use Scala Reflection to figure out which methods I needed
+going to be able to fill in the implementation for any trait, I&rsquo;d need to use Scala Reflection to figure out which methods I needed
 to add.  In this post, we&rsquo;ll learn reflection and then generalize our macro to work on any trait.</p>
 
 <p>Once again, I&rsquo;d like to warn to the reader that is not so much a tutorial, as a journal of my path to discovery, with some mistakes
@@ -125,7 +125,7 @@ and detours along the way.</p>
 
 <h2>Reflection Basics</h2>
 
-<p>I started out by learning the basics of <a href="http://docs.scala-lang.org/overviews/reflection/overview.html">Scala Reflection</a>.  Its pretty easy to play
+<p>I started out by learning the basics of <a href="http://docs.scala-lang.org/overviews/reflection/overview.html">Scala Reflection</a>.  It&rsquo;s pretty easy to play
 around with reflection in the repl.  Start with our same set of imports from <a href="http://imranrashid.com/posts/learning-scala-macros/">last time</a>:</p>
 
 <script src="https://gist.github.com/squito/7094987.js?file=replImports.scala"></script>
@@ -151,7 +151,7 @@ also &ldquo;cast&rdquo; them to methods with <code>asMethod</code>.</p>
 <script src="https://gist.github.com/squito/7847796.js?file=repl_method_filter_1.scala"></script>
 
 
-<p>I only had one problem left.  I wanted my macro to only supply a definition for <em>undefined</em> methods. My example trait supplied a definition for <code>y</code>, but I hadn&rsquo;t filtered it out yet.</p>
+<p>I only had one problem left.  I wanted my macro to only supply an implementation for <em>undefined</em> methods. My example trait supplied an implementation for <code>y</code>, but I hadn&rsquo;t filtered it out yet.</p>
 
 <h4>Detour: Using Reflection on Methods</h4>
 
@@ -237,7 +237,7 @@ detail here.  But you can take a look at the <a href="https://github.com/squito/
 <p>I won&rsquo;t promise more in this series, but there are few more ideas I&rsquo;d like to explore.  First, Eugene Burmako suggested that I could achieve the functionality I want in my library using normal macros, instead of macro annotations.  While it would change the user api somewhat, this is particularly appealing because
 macro annotations won&rsquo;t make it into scala until 2.12 at the earliest.</p>
 
-<p>Second, now that I&rsquo;ve got a proof of concept, I&rsquo;d really like to explore the idea of having classes store their data in <code>ByteBuffer</code>s.  Probably most readers are only interested in the discussion of using macros and reflection, but aren&rsquo;t sure what the point of my macro is.  I hope that by expanding these ideas somewhat, I can make it easy to store general purpose data structures directly in byte buffers.  That can have all sorts of potential benefits: save memory, avoid serialization, store data off-heap, and lead to more cache-aware data structures (particularly important for numerical computing).  And by using macros, we can still keep a clean user api.  But, its still just an idea, I need to prove those claims.</p>
+<p>Second, now that I&rsquo;ve got a proof of concept, I&rsquo;d really like to explore the idea of having classes store their data in <code>ByteBuffer</code>s.  Probably most readers are only interested in the discussion of using macros and reflection, but aren&rsquo;t sure what the point of my macro is.  I hope that by expanding these ideas somewhat, I can make it easy to store general purpose data structures directly in byte buffers.  That can have all sorts of potential benefits: save memory, avoid serialization, store data off-heap, and lead to more cache-aware data structures (particularly important for numerical computing).  And by using macros, we can still keep a clean user api.  But, it&rsquo;s still just an idea, I need to prove those claims.</p>
 
 <p>I hope you&rsquo;ve found this helpful in your exploration of macros.  Please let me know if you found this useful, if parts are unclear, or if you found any errors.</p>
 
