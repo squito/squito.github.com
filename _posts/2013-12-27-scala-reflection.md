@@ -27,7 +27,7 @@ and detours along the way.
 
 ## Reflection Basics
 
-I started out by learning the basics of [Scala Reflection](http://docs.scala-lang.org/overviews/reflection/overview.html).  Its pretty easy to play
+I started out by learning the basics of [Scala Reflection](http://docs.scala-lang.org/overviews/reflection/overview.html).  It's pretty easy to play
 around with reflection in the repl.  Start with our same set of imports from [last time](http://imranrashid.com/posts/learning-scala-macros/):
 
 <script src="https://gist.github.com/squito/7094987.js?file=replImports.scala"></script>
@@ -127,7 +127,7 @@ In these two blog posts, we've learned how to use scala macro annotations to aut
 I won't promise more in this series, but there are few more ideas I'd like to explore.  First, Eugene Burmako suggested that I could achieve the functionality I want in my library using normal macros, instead of macro annotations.  While it would change the user api somewhat, this is particularly appealing because
 macro annotations won't make it into scala until 2.12 at the earliest.
 
-Second, now that I've got a proof of concept, I'd really like to explore the idea of having classes store their data in `ByteBuffer`s.  Probably most readers are only interested in the discussion of using macros and reflection, but aren't sure what the point of my macro is.  I hope that by expanding these ideas somewhat, I can make it easy to store general purpose data structures directly in byte buffers.  That can have all sorts of potential benefits: save memory, avoid serialization, store data off-heap, and lead to more cache-aware data structures (particularly important for numerical computing).  And by using macros, we can still keep a clean user api.  But, its still just an idea, I need to prove those claims.
+Second, now that I've got a proof of concept, I'd really like to explore the idea of having classes store their data in `ByteBuffer`s.  Probably most readers are only interested in the discussion of using macros and reflection, but aren't sure what the point of my macro is.  I hope that by expanding these ideas somewhat, I can make it easy to store general purpose data structures directly in byte buffers.  That can have all sorts of potential benefits: save memory, avoid serialization, store data off-heap, and lead to more cache-aware data structures (particularly important for numerical computing).  And by using macros, we can still keep a clean user api.  But, it's still just an idea, I need to prove those claims.
 
 I hope you've found this helpful in your exploration of macros.  Please let me know if you found this useful, if parts are unclear, or if you found any errors.
 
