@@ -9,7 +9,7 @@ tags:
 ---
 
 In the [first part of this series](http://imranrashid.com/posts/learning-scala-macros/), I learned how to use Macro Annotations to add a few simple methods to a class, to fill
-in the definition of a trait.  My eventual goal is to be able to take a trait which defines a few basic `Int` and `Float` fields,
+in the implementation of a trait.  My eventual goal is to be able to take a trait which defines a few basic `Int` and `Float` fields,
 and automatically generate a class that would read those fields from a `ByteBuffer`.  Eg., given this:
 
 <script src="https://gist.github.com/squito/7094987.js?file=trait.scala"></script>
@@ -19,7 +19,7 @@ My macro should generate the equivalent of
 <script src="https://gist.github.com/squito/7094987.js?file=goalClass.scala"></script>
 
 Earlier, I was only able to add the methods for one fixed trait -- not very useful.  If I was
-going to be able to fill in the definitions for any trait, I'd need to use Scala Reflection to figure out which methods I needed
+going to be able to fill in the implementation for any trait, I'd need to use Scala Reflection to figure out which methods I needed
 to add.  In this post, we'll learn reflection and then generalize our macro to work on any trait.
 
 Once again, I'd like to warn to the reader that is not so much a tutorial, as a journal of my path to discovery, with some mistakes
@@ -49,7 +49,7 @@ I could use these on the type of my example trait, and filter out most of the me
 
 <script src="https://gist.github.com/squito/7847796.js?file=repl_method_filter_1.scala"></script>
 
-I only had one problem left.  I wanted my macro to only supply a definition for *undefined* methods. My example trait supplied a definition for `y`, but I hadn't filtered it out yet.
+I only had one problem left.  I wanted my macro to only supply an implementation for *undefined* methods. My example trait supplied an implementation for `y`, but I hadn't filtered it out yet.
 
 #### Detour: Using Reflection on Methods
 
