@@ -107,15 +107,15 @@ Then the annotation can be used like so:
 
 <script src="https://gist.github.com/squito/7847796.js?file=using_annotation_type_parameters.scala"></script>
 
-Again, I put together some [unit tests to verify the behavior](https://github.com/squito/learn_macros/blob/master/macrotests/src/test/scala/com/imranrashid/oleander/macros/MacrosWithReflectionTest.scala)
+Again, I put together some [unit tests to verify the behavior](https://github.com/squito/learn_macros/blob/master/macrotests/src/test/scala/com/imranrashid/oleander/macros/MacrosWithReflectionTest.scala).
 
 ## Putting It All Together
 
 We've got all the key pieces now.  We know how to:
 
 1. Template our macro annotation with the type of trait it should add.
-2. Use reflection inside our macro to find all the getters it needs to define
-3. Add methods to the existing class defintion (from [part 1](http://imranrashid.com/posts/learning-scala-macros/))
+2. Use reflection inside our macro to find all the getters it needs to define.
+3. Add methods to the existing class defintion (from [part 1](http://imranrashid.com/posts/learning-scala-macros/)).
 
 Since what's left is mostly normal scala coding, I won't go through it in
 detail here.  But you can take a look at the [full implementations](https://github.com/squito/learn_macros/blob/master/macros/src/main/scala/com/imranrashid/oleander/macros/ByteBufferBacked.scala).  There are two versions of my annotation, `@ByteBufferBacked` with just getters, and `@MutableByteBufferBacked` which also adds in setters, which can be used like so:
