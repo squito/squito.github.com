@@ -18,16 +18,16 @@ My macro should generate the equivalent of
 
 <script src="https://gist.github.com/squito/7094987.js?file=goalClass.scala"></script>
 
-However, I was only able to add the methods for one fixed trait -- not very useful.  If I was
+Earlier, I was only able to add the methods for one fixed trait -- not very useful.  If I was
 going to be able to fill in the definitions for any trait, I'd need to use Scala Reflection to figure out which methods I needed
-to add.
+to add.  In this post, we'll learn reflection and then generalize our macro to work on any trait.
 
 Once again, I'd like to warn to the reader that is not so much a tutorial, as a journal of my path to discovery, with some mistakes
 and detours along the way.
 
 ## Reflection Basics
 
-My first step was to learn the basics of [Scala Reflection](http://docs.scala-lang.org/overviews/reflection/overview.html).  Its pretty easy to play
+I started out by learning the basics of [Scala Reflection](http://docs.scala-lang.org/overviews/reflection/overview.html).  Its pretty easy to play
 around with reflection in the repl.  Start with our same set of imports from last time:
 
 <script src="https://gist.github.com/squito/7094987.js?file=replImports.scala"></script>
@@ -37,7 +37,7 @@ of information, like all methods and variables.  (If you're familiar with reflec
 
 <script src="https://gist.github.com/squito/7847796.js?file=simple_reflection_repl.scala"></script>
 
-Note that the `MemberScope` returned by `typ.members` is a `Traversable`, so I can call `map`, `filter`, etc.  Here I've filted down to just the methods, and
+Note that the `MemberScope` returned by `typ.members` is a `Traversable`, so I can call `map`, `filter`, etc.  Here I've filtered down to just the methods, and
 also "cast" them to methods with `asMethod`.
 
 I only needed to do some small filtering on top of this.  I wanted to filter down to only those methods that (1) take no arguments, (2) return either an `Int` or a
@@ -45,7 +45,7 @@ I only needed to do some small filtering on top of this.  I wanted to filter dow
 
 <script src="https://gist.github.com/squito/7847796.js?file=reflection_method_filters.scala"></script>
 
-I could use these the type of my example trait, and filter out most of the methods I should ignore:
+I could use these on the type of my example trait, and filter out most of the methods I should ignore:
 
 <script src="https://gist.github.com/squito/7847796.js?file=repl_method_filter_1.scala"></script>
 
@@ -57,14 +57,14 @@ There is actually a very simple solution to finding defined and undefined method
 how to use reflection_.  This is section is totally unnecessary for my end goal, but hopefully you'll find it interesting nonetheless.
 
 I needed to find some way to differentiate method `x` from method `y`.  My first instinct was to just look at what was available to me with tab-completion,
-hoping something would look like "isDefined".
+hoping something would look like "isDefined" or "isAbstract".
  
 <script src="https://gist.github.com/squito/7847796.js?file=method_repl_explore.scala"></script>
 
 
-Hmm, scanning the list, i didn't see anything that jumped out at me.  The list of methods was too long to go through them all, and see which one would be different.
-But then I realized -- I could use reflection to call of those methods on both `x` and `y`, and see which ones yielded different results.  That is, I would call all of the
-methods available on the `MethodSymbol`s.  I could use reflection to call those methods -- I'd be getting `MethodSymbol`s that were members of `MethodSymbol`.   (Yes, there was probably an easier way, but now this just sounded fun.)  
+Hmm, scanning the list, i didn't see anything that jumped out at me.  The list of methods was too long to go through them all by hand.
+But then I realized -- I could use reflection to call of those methods on both `x` and `y`, and see which ones yielded different results.  That is,
+I'd be getting `MethodSymbol`s that were members of `MethodSymbol`.   (Yes, there was probably an easier way, but now this just sounded fun.)  
 
 To call methods using reflection, you first need to get a runtime mirror, from that get an instance mirror, and then finally from there you can call the methods:
 
@@ -93,7 +93,7 @@ The full code is checked into my learn_macros project, even with some [simple un
 
 ## Parameterizing Annotations
 
-I've got the basics of reflection -- now I just needed to get a handle on a `Type` of my target trait inside my macro annotation.  This one was surprisingly difficult to figure out, I had to turn to stackoverflow in the end.  As always, [Eugene Burmako was quick to give an answer](http://stackoverflow.com/questions/19791686/type-parameters-on-scala-macro-annotations).
+I've got the basics of reflection -- now I just needed to get a handle on the `Type` of my target trait inside my macro annotation.  This one was surprisingly difficult to figure out, I had to turn to stackoverflow and got the [answer from Eugene Burmako](http://stackoverflow.com/questions/19791686/type-parameters-on-scala-macro-annotations).
 
 When using my macro annotation, I make the target trait a type parameter on the annotation class, and then pull it out the type with a call to `typeCheck`:
 
@@ -114,7 +114,7 @@ We've got all the key pieces now.  We know how to:
 3. Add methods to the existing class defintion (from [part 1](http://imranrashid.com/posts/learning-scala-macros/))
 
 Since what's left is mostly normal scala coding, I won't go through it in
-detail here.  But you can take a look at the [full implementations](https://github.com/squito/learn_macros/blob/master/macros/src/main/scala/com/imranrashid/oleander/macros/ByteBufferBacked.scala).  There are two versions of my annotation, `@ByteBufferBacked` with just getters, and `@MutableByteBufferBacked` which also adds in setters.  
+detail here.  But you can take a look at the [full implementations](https://github.com/squito/learn_macros/blob/master/macros/src/main/scala/com/imranrashid/oleander/macros/ByteBufferBacked.scala).  There are two versions of my annotation, `@ByteBufferBacked` with just getters, and `@MutableByteBufferBacked` which also adds in setters, which can be used like so:
 
 <script src="https://gist.github.com/squito/7847796.js?file=final_api_example.scala"></script>
 
