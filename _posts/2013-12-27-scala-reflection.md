@@ -28,7 +28,7 @@ and detours along the way.
 ## Reflection Basics
 
 I started out by learning the basics of [Scala Reflection](http://docs.scala-lang.org/overviews/reflection/overview.html).  Its pretty easy to play
-around with reflection in the repl.  Start with our same set of imports from last time:
+around with reflection in the repl.  Start with our same set of imports from [last time](http://imranrashid.com/posts/learning-scala-macros/):
 
 <script src="https://gist.github.com/squito/7094987.js?file=replImports.scala"></script>
 
