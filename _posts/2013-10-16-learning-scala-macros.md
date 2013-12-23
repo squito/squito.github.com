@@ -178,3 +178,5 @@ Now I had macros to fill in method definitions and add in a trait as a parent cl
 So my macro needed to find all abstract methods in the referenced trait, and provide implementations of them.  For that, I'd need to dive into [Scala Reflection](http://docs.scala-lang.org/overviews/reflection/overview.html), another new features in Scala 2.10.  This post is already pretty long, though, and I felt just learning the basics of macros is a good start, so I'll save that for another update.  Stay tuned.
 
 I hope you've learned something from my experience -- I sure wish I knew some of this at the very beginning.  I've left out a lot of details, but I've tried to focus on the major breakthroughs I made, the things I didn't find elsewhere (or at least, I didn't find right away).  Leave some comments if you found this useful, if you have other tips on learning macros (or if you have any corrections)!
+
+**UPDATE** I've just posted [part 2](http://imranrashid.com/posts/scala-reflection/), where I explore scala reflection and get my macro to work for any trait.
