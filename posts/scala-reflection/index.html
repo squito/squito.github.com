@@ -104,29 +104,33 @@
 <div class="content">
   <div id="post">
     <div class="body">
-      <p>In the <a href="http://imranrashid.com/posts/learning-scala-macros/">first part of this series</a>, I learned how to use Macro Annotations to add a few simple methods to a class, to fill
-in the implementation of a trait.  My eventual goal is to be able to take a trait which defines a few basic <code>Int</code> and <code>Float</code> fields,
+      <p>In the <a href="http://imranrashid.com/posts/learning-scala-macros/">first part of this series</a>, I learned how to use Macro Annotations to add a few simple methods to a class and fill
+in the implementation of a trait.
+My eventual goal is to be able to take a trait which defines a few basic <code>Int</code> and <code>Float</code> fields,
 and automatically generate a class that would read those fields from a <code>ByteBuffer</code>.  Eg., given this:</p>
 
 <script src="https://gist.github.com/squito/7094987.js?file=trait.scala"></script>
 
 
-<p>My macro should generate the equivalent of</p>
+<p>My macro should generate the equivalent of:</p>
 
 <script src="https://gist.github.com/squito/7094987.js?file=goalClass.scala"></script>
 
 
-<p>Earlier, I was only able to add the methods for one fixed trait &mdash; not very useful.  If I was
-going to be able to fill in the implementation for any trait, I&rsquo;d need to use Scala Reflection to figure out which methods I needed
-to add.  In this post, we&rsquo;ll learn reflection and then generalize our macro to work on any trait.</p>
+<p>In the previous post, I was only able to add the methods for one fixed trait &mdash; not very useful.
+If I was
+going to be able to fill in the implementation for any trait, I&rsquo;d need to use scala reflection to figure out which methods I needed
+to add.
+In this post, we&rsquo;ll learn scala reflection and then generalize our macro to work on any trait.</p>
 
-<p>Once again, I&rsquo;d like to warn to the reader that is not so much a tutorial, as a journal of my path to discovery, with some mistakes
+<p>Once again, I&rsquo;d like to warn the reader that is not so much a tutorial, as a journal of my path to discovery, with some mistakes
 and detours along the way.</p>
 
 <h2>Reflection Basics</h2>
 
-<p>I started out by learning the basics of <a href="http://docs.scala-lang.org/overviews/reflection/overview.html">Scala Reflection</a>.  It&rsquo;s pretty easy to play
-around with reflection in the repl.  Start with our same set of imports from <a href="http://imranrashid.com/posts/learning-scala-macros/">last time</a>:</p>
+<p>I started out by learning the basics of <a href="http://docs.scala-lang.org/overviews/reflection/overview.html">scala reflection</a>.  It&rsquo;s pretty easy to play
+around with reflection in the repl.
+Let&rsquo;s start with our same set of imports from <a href="http://imranrashid.com/posts/learning-scala-macros/">last time</a>:</p>
 
 <script src="https://gist.github.com/squito/7094987.js?file=replImports.scala"></script>
 
@@ -159,7 +163,7 @@ also &ldquo;cast&rdquo; them to methods with <code>asMethod</code>.</p>
 how to use reflection</em>.  This is section is totally unnecessary for my end goal, but hopefully you&rsquo;ll find it interesting nonetheless.</p>
 
 <p>I needed to find some way to differentiate method <code>x</code> from method <code>y</code>.  My first instinct was to just look at what was available to me with tab-completion,
-hoping something would look like &ldquo;isDefined&rdquo; or &ldquo;isAbstract&rdquo;.</p>
+hoping something would look like <code>isDefined</code> or <code>isAbstract</code>.</p>
 
 <script src="https://gist.github.com/squito/7847796.js?file=method_repl_explore.scala"></script>
 
@@ -199,7 +203,7 @@ I&rsquo;d be getting <code>MethodSymbol</code>s that were members of <code>Metho
 
 <p>I&rsquo;ve got the basics of reflection &mdash; now I just needed to get a handle on the <code>Type</code> of my target trait inside my macro annotation.  This one was surprisingly difficult to figure out, I had to turn to stackoverflow and got the <a href="http://stackoverflow.com/questions/19791686/type-parameters-on-scala-macro-annotations">answer from Eugene Burmako</a>.</p>
 
-<p>When using my macro annotation, I make the target trait a type parameter on the annotation class, and then pull it out the type with a call to <code>typeCheck</code>:</p>
+<p>When using my macro annotation, I make the target trait a type parameter on the annotation class, and then pull it out of the type with a call to <code>typeCheck</code>:</p>
 
 <script src="https://gist.github.com/squito/7847796.js?file=annotation_type_parameters.scala"></script>
 
