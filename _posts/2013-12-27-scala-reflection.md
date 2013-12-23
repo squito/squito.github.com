@@ -8,27 +8,31 @@ tags:
     - Tech
 ---
 
-In the [first part of this series](http://imranrashid.com/posts/learning-scala-macros/), I learned how to use Macro Annotations to add a few simple methods to a class, to fill
-in the implementation of a trait.  My eventual goal is to be able to take a trait which defines a few basic `Int` and `Float` fields,
+In the [first part of this series](http://imranrashid.com/posts/learning-scala-macros/), I learned how to use Macro Annotations to add a few simple methods to a class and fill
+in the implementation of a trait.
+My eventual goal is to be able to take a trait which defines a few basic `Int` and `Float` fields,
 and automatically generate a class that would read those fields from a `ByteBuffer`.  Eg., given this:
 
 <script src="https://gist.github.com/squito/7094987.js?file=trait.scala"></script>
 
-My macro should generate the equivalent of
+My macro should generate the equivalent of:
 
 <script src="https://gist.github.com/squito/7094987.js?file=goalClass.scala"></script>
 
-Earlier, I was only able to add the methods for one fixed trait -- not very useful.  If I was
-going to be able to fill in the implementation for any trait, I'd need to use Scala Reflection to figure out which methods I needed
-to add.  In this post, we'll learn reflection and then generalize our macro to work on any trait.
+In the previous post, I was only able to add the methods for one fixed trait -- not very useful.
+If I was
+going to be able to fill in the implementation for any trait, I'd need to use scala reflection to figure out which methods I needed
+to add.
+In this post, we'll learn scala reflection and then generalize our macro to work on any trait.
 
-Once again, I'd like to warn to the reader that is not so much a tutorial, as a journal of my path to discovery, with some mistakes
+Once again, I'd like to warn the reader that is not so much a tutorial, as a journal of my path to discovery, with some mistakes
 and detours along the way.
 
 ## Reflection Basics
 
-I started out by learning the basics of [Scala Reflection](http://docs.scala-lang.org/overviews/reflection/overview.html).  It's pretty easy to play
-around with reflection in the repl.  Start with our same set of imports from [last time](http://imranrashid.com/posts/learning-scala-macros/):
+I started out by learning the basics of [scala reflection](http://docs.scala-lang.org/overviews/reflection/overview.html).  It's pretty easy to play
+around with reflection in the repl.
+Let's start with our same set of imports from [last time](http://imranrashid.com/posts/learning-scala-macros/):
 
 <script src="https://gist.github.com/squito/7094987.js?file=replImports.scala"></script>
 
@@ -57,7 +61,7 @@ There is actually a very simple solution to finding defined and undefined method
 how to use reflection_.  This is section is totally unnecessary for my end goal, but hopefully you'll find it interesting nonetheless.
 
 I needed to find some way to differentiate method `x` from method `y`.  My first instinct was to just look at what was available to me with tab-completion,
-hoping something would look like "isDefined" or "isAbstract".
+hoping something would look like `isDefined` or `isAbstract`.
  
 <script src="https://gist.github.com/squito/7847796.js?file=method_repl_explore.scala"></script>
 
@@ -95,7 +99,7 @@ The full code is checked into my learn_macros project, even with some [simple un
 
 I've got the basics of reflection -- now I just needed to get a handle on the `Type` of my target trait inside my macro annotation.  This one was surprisingly difficult to figure out, I had to turn to stackoverflow and got the [answer from Eugene Burmako](http://stackoverflow.com/questions/19791686/type-parameters-on-scala-macro-annotations).
 
-When using my macro annotation, I make the target trait a type parameter on the annotation class, and then pull it out the type with a call to `typeCheck`:
+When using my macro annotation, I make the target trait a type parameter on the annotation class, and then pull it out of the type with a call to `typeCheck`:
 
 <script src="https://gist.github.com/squito/7847796.js?file=annotation_type_parameters.scala"></script>
 
