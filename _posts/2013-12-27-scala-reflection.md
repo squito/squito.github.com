@@ -135,4 +135,5 @@ Second, now that I've got a proof of concept, I'd really like to explore the ide
 
 I hope you've found this helpful in your exploration of macros.  Please let me know if you found this useful, if parts are unclear, or if you found any errors.
 
+_Thanks to all my coworkers at [Quantifind](http://quantifind.com) for all their help proofreading this!_
 
