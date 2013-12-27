@@ -89,7 +89,7 @@ Nonetheless, that was a fun little experiment in using reflection. (I warned you
 
 ## Runtime and Compile Time Universes
 
-So far I've been using runtime reflection as an easy way to learn.  But to use in my macros, I'd need to switch to compile time reflection.  For the most part, reflection is the same, but you use a different `Universe` in compile time reflection.  Since all of the types are dependent on the universe, these also means all the types of my methods change.
+So far I've been using runtime reflection as an easy way to learn.  But to use in my macros, I'd need to switch to compile time reflection.  For the most part, reflection is the same, but you use a different `Universe` in compile time reflection.  Since all of the types are dependent on the universe, this also means all the types of my methods change.
 
 I really wanted to have common methods which worked for both runtime & compile time reflection, and which I could unit test.  To support both, I put all of [my methods into a helper class](https://github.com/squito/learn_macros/blob/master/macros/src/main/scala/com/imranrashid/oleander/macros/BasicReflection.scala) which takes a `scala.reflect.api.Universe` (the parent to runtime & compile time universes).  Then I can instantiate it with either `scala.reflect.runtime.universe` or `context.universe` in a macro.
 
