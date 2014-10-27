@@ -5,10 +5,7 @@ author:
   github: squito
   name: "Imran Rashid"
 
-auto: false
 safe: false
-server: false
-server_port: 4000
 base-url: /
 production_url: "http://squito.github.com"
 
@@ -31,7 +28,7 @@ exclude:
 
 future: true
 lsi: false
-pygments: true
+highlighter: pygments
 markdown: rdiscount
 permalink: "/posts/:title"
 
