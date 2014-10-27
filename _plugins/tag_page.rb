@@ -28,10 +28,10 @@ EOS
     end
 
     def render(layouts, site_payload)
-      payload = {
+      payload = Utils.deep_merge_hashes({
         "page" => self.to_liquid,
         "paginator" => pager.to_liquid
-      }.deep_merge(site_payload)
+      }, site_payload)
       do_layout(payload, layouts)
     end
 
@@ -40,7 +40,7 @@ EOS
     end
 
     def to_liquid
-      self.data.deep_merge({
+      Utils.deep_merge_hashes(self.data, {
                              "url" => self.url,
                              "content" => self.content
                            })
