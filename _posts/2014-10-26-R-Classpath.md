@@ -23,7 +23,12 @@ audience.  In fact, one of the major benefits of R is all the great packages tha
 written by others and shared publicly on [CRAN](http://cran.r-project.org/).  But they are **much**
 too heavy-weight for some simple utility functions; I don't want to
 go through all the work of creating a package when I write a little util which stores our 
-database configuration.  
+database configuration.
+
+_Update_: If you **do** want to write a package, I highly recommend
+the [`devtools`](http://cran.r-project.org/web/packages/devtools/index.html) package and 
+[Hadley Wickham's book on writing packages](http://r-pkgs.had.co.nz/) (in
+progress, but lots of good content already available online).
 
 The other way to re-use your utility functions is to stick them in a plain `.R` file, and then
 `source()` that file whenever you want to use it.  This is perfect when you are working by yourself,
@@ -92,10 +97,25 @@ then execute
 `launchctl < ~/.launchd.conf`
 
 Now that we've got our utility functions nicely separated, so they are easier to reuse and maintain,
-the next step would be set some unit tests for them.  But, that will have to wait for a future blog
-post :)
+the next step would be set some unit tests for them.  ~~But, that will have to wait for a future blog
+post :)~~ Hadley Wickham's book on R packages also has a good [section on unit
+testing](http://r-pkgs.had.co.nz/tests.html).
 
 I hope this was helpful -- honestly this is a system I came up because there didn't seem to be a
 better way.  I'm
 curious if bigger teams of R users have developed other ways of dealing with this problem, I'd love
 to hear about it in the comments.
+
+
+_Update_: Hadley Wickham [commented on
+twitter](https://twitter.com/hadleywickham/status/528184886050320385?cn=cmVwbHk%3D) that I should
+just bite the bullet and write packages.  After that post, I took a closer look at the
+[`devtools`](http://cran.r-project.org/web/packages/devtools/index.html) package, and his [upcoming
+book](http://r-pkgs.had.co.nz/).  They definitely make the process of writing and using your own 
+packages *much* easier.
+
+Its still a lot more complicated than just sticking your
+functions in a file, though.  By all 
+means, if you are motivated to write a package, _do that
+instead_.  But I imagine there are many organizations where that simply won't happen because of the
+overhead involved.  Hopefully this is a happy-compromise in those situations.
