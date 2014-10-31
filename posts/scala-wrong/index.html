@@ -90,7 +90,7 @@
     <div class='right'>
       <a href="https://github.com/squito" id="github"><i class='icon-github'></i></a>
     </div>
-    <ul class="tag-list" id="main-tag-list"><li class="tag"><a href="/tag/jekyll" tag-weight="1" title="Tag - jekyll">jekyll</a></li> <li class="tag"><a href="/tag/latex" tag-weight="1" title="Tag - latex">latex</a></li> <li class="tag"><a href="/tag/ML" tag-weight="2" title="Tag - ML">ML</a></li> <li class="tag"><a href="/tag/recipe" tag-weight="5" title="Tag - recipe">recipe</a></li> <li class="tag"><a href="/tag/book review" tag-weight="2" title="Tag - book review">book review</a></li> <li class="tag"><a href="/tag/Scala" tag-weight="7" title="Tag - Scala">Scala</a></li> <li class="tag"><a href="/tag/Open Source" tag-weight="1" title="Tag - Open Source">Open Source</a></li> <li class="tag"><a href="/tag/Personal" tag-weight="1" title="Tag - Personal">Personal</a></li> <li class="tag"><a href="/tag/Travel" tag-weight="1" title="Tag - Travel">Travel</a></li> <li class="tag"><a href="/tag/Review" tag-weight="1" title="Tag - Review">Review</a></li> <li class="tag"><a href="/tag/tech" tag-weight="1" title="Tag - tech">tech</a></li> <li class="tag"><a href="/tag/profiling" tag-weight="1" title="Tag - profiling">profiling</a></li> <li class="tag"><a href="/tag/nature" tag-weight="1" title="Tag - nature">nature</a></li> <li class="tag"><a href="/tag/mountains" tag-weight="1" title="Tag - mountains">mountains</a></li> <li class="tag"><a href="/tag/Macros" tag-weight="2" title="Tag - Macros">Macros</a></li> <li class="tag"><a href="/tag/Tech" tag-weight="2" title="Tag - Tech">Tech</a></li> </ul> 
+    <ul class="tag-list" id="main-tag-list"><li class="tag"><a href="/tag/jekyll" tag-weight="1" title="Tag - jekyll">jekyll</a></li> <li class="tag"><a href="/tag/latex" tag-weight="1" title="Tag - latex">latex</a></li> <li class="tag"><a href="/tag/ML" tag-weight="2" title="Tag - ML">ML</a></li> <li class="tag"><a href="/tag/recipe" tag-weight="5" title="Tag - recipe">recipe</a></li> <li class="tag"><a href="/tag/book review" tag-weight="2" title="Tag - book review">book review</a></li> <li class="tag"><a href="/tag/Scala" tag-weight="7" title="Tag - Scala">Scala</a></li> <li class="tag"><a href="/tag/Open Source" tag-weight="1" title="Tag - Open Source">Open Source</a></li> <li class="tag"><a href="/tag/Personal" tag-weight="1" title="Tag - Personal">Personal</a></li> <li class="tag"><a href="/tag/Travel" tag-weight="1" title="Tag - Travel">Travel</a></li> <li class="tag"><a href="/tag/Review" tag-weight="1" title="Tag - Review">Review</a></li> <li class="tag"><a href="/tag/tech" tag-weight="1" title="Tag - tech">tech</a></li> <li class="tag"><a href="/tag/profiling" tag-weight="1" title="Tag - profiling">profiling</a></li> <li class="tag"><a href="/tag/nature" tag-weight="1" title="Tag - nature">nature</a></li> <li class="tag"><a href="/tag/mountains" tag-weight="1" title="Tag - mountains">mountains</a></li> <li class="tag"><a href="/tag/Macros" tag-weight="2" title="Tag - Macros">Macros</a></li> <li class="tag"><a href="/tag/Tech" tag-weight="3" title="Tag - Tech">Tech</a></li> <li class="tag"><a href="/tag/R" tag-weight="1" title="Tag - R">R</a></li> </ul> 
   </div>
 </header>
 
@@ -111,9 +111,9 @@ libraries, plus all the tools I&rsquo;m used to using for debugging and diagnosi
 a hard time going back to programming in Java after this.</p>
 
 <p>Despite my love of Scala, though, there are a few things that drive me bonkers.  Maybe some Scala guru
-will see this post and take into consideration for future versions of the language &mdash; but almost certainly not.
+will see this post and take into consideration for future versions of the language &ndash; but almost certainly not.
 If I&rsquo;m lucky, this post might be read by someone else that is new to Scala, that is going through similar
-frustrations &mdash; at least this way they&rsquo;ll know they are not alone.  But, really, this post is just my chance
+frustrations &ndash; at least this way they&rsquo;ll know they are not alone.  But, really, this post is just my chance
 to vent.</p>
 
 <ol>
@@ -132,12 +132,12 @@ a mutable Map, and it won&rsquo;t compile.</p>
 <p>  From now on, I always <code>import collection._</code>.  That way, I get the generic interfaces by default in my API, and I
 explicitly request the mutable or immutable version of the collection if I want to, eg. <code>val m = mutable.Map[String,Int]()</code></p></li>
 <li><p><strong>DSL run amok</strong>.  One of my biggest complaints about Java was the lack of operator overloading.  Just look at the BigNumber api,
-you quickly see what a pain it is.  Scala fixes this problem &mdash; code is so much cleaner by adding <code>apply</code>, <code>+=</code>, <code>++</code>, etc.  Such
+you quickly see what a pain it is.  Scala fixes this problem &ndash; code is so much cleaner by adding <code>apply</code>, <code>+=</code>, <code>++</code>, etc.  Such
 a huge improvement.  Unfortunately, Scala developers have gotten a little carried away.  Libraries are full of so much crazy,
 <em>undocumented</em> operator overloading, it ends up making code inscrutable to anyone that isn&rsquo;t an expert in the library.  I guess
-I&rsquo;m not actually complaining about Scala itself here &mdash; it&rsquo;s great that it lets you do this &mdash; I&rsquo;m complaining about how much
+I&rsquo;m not actually complaining about Scala itself here &ndash; it&rsquo;s great that it lets you do this &ndash; I&rsquo;m complaining about how much
 people abuse the ability to create custom DSL.  Most often, my goal is invest as little time as possible in a tool to get what
-I need out of it &mdash; as a good Computer Scientist, I try to find the highest layer of abstraction that is still sufficient.  Lots
+I need out of it &ndash; as a good Computer Scientist, I try to find the highest layer of abstraction that is still sufficient.  Lots
 of DSL just makes that harder.</p></li>
 <li><p><strong>Slow compile times</strong>.  Yes, I know, the Scala compiler is much more complicated than the Java compiler, that it has to work so much
 harder, etc. etc.  It still annoys me.  Even with large Java projects, I felt like the compiler (especially continuous compilation
@@ -146,7 +146,7 @@ The sad truth is, this leads to all sorts of bad development practices on my par
 I don&rsquo;t want to wait for the compiler.  OK, maybe its unfair to say &ldquo;Scala got it wrong&rdquo; on this one, I just wish I could speed up
 compilation, eg. by turning off some of the features.</p></li>
 <li><p><strong>SBT</strong>.  Simple Build Tool.  I hope that choice of name was ironic.  I used to use Ant as a Java developer; I won&rsquo;t claim it was simple,
-or amazing, but at least it was well documented.  But sbt project definitions are just Scala code!  Sounds easy enough &mdash; as a Scala
+or amazing, but at least it was well documented.  But sbt project definitions are just Scala code!  Sounds easy enough &ndash; as a Scala
 developer, I won&rsquo;t have any trouble understanding, right?  Nope, I&rsquo;m just stuck in DSL hell.  Yes, I know it is scala code, but even just
 getting past the crazy syntax, let alone tracking down the method definitions, is more than I want to deal with for setting up a simple build.</p></li>
 </ol>

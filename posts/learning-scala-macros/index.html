@@ -90,7 +90,7 @@
     <div class='right'>
       <a href="https://github.com/squito" id="github"><i class='icon-github'></i></a>
     </div>
-    <ul class="tag-list" id="main-tag-list"><li class="tag"><a href="/tag/jekyll" tag-weight="1" title="Tag - jekyll">jekyll</a></li> <li class="tag"><a href="/tag/latex" tag-weight="1" title="Tag - latex">latex</a></li> <li class="tag"><a href="/tag/ML" tag-weight="2" title="Tag - ML">ML</a></li> <li class="tag"><a href="/tag/recipe" tag-weight="5" title="Tag - recipe">recipe</a></li> <li class="tag"><a href="/tag/book review" tag-weight="2" title="Tag - book review">book review</a></li> <li class="tag"><a href="/tag/Scala" tag-weight="7" title="Tag - Scala">Scala</a></li> <li class="tag"><a href="/tag/Open Source" tag-weight="1" title="Tag - Open Source">Open Source</a></li> <li class="tag"><a href="/tag/Personal" tag-weight="1" title="Tag - Personal">Personal</a></li> <li class="tag"><a href="/tag/Travel" tag-weight="1" title="Tag - Travel">Travel</a></li> <li class="tag"><a href="/tag/Review" tag-weight="1" title="Tag - Review">Review</a></li> <li class="tag"><a href="/tag/tech" tag-weight="1" title="Tag - tech">tech</a></li> <li class="tag"><a href="/tag/profiling" tag-weight="1" title="Tag - profiling">profiling</a></li> <li class="tag"><a href="/tag/nature" tag-weight="1" title="Tag - nature">nature</a></li> <li class="tag"><a href="/tag/mountains" tag-weight="1" title="Tag - mountains">mountains</a></li> <li class="tag"><a href="/tag/Macros" tag-weight="2" title="Tag - Macros">Macros</a></li> <li class="tag"><a href="/tag/Tech" tag-weight="2" title="Tag - Tech">Tech</a></li> </ul> 
+    <ul class="tag-list" id="main-tag-list"><li class="tag"><a href="/tag/jekyll" tag-weight="1" title="Tag - jekyll">jekyll</a></li> <li class="tag"><a href="/tag/latex" tag-weight="1" title="Tag - latex">latex</a></li> <li class="tag"><a href="/tag/ML" tag-weight="2" title="Tag - ML">ML</a></li> <li class="tag"><a href="/tag/recipe" tag-weight="5" title="Tag - recipe">recipe</a></li> <li class="tag"><a href="/tag/book review" tag-weight="2" title="Tag - book review">book review</a></li> <li class="tag"><a href="/tag/Scala" tag-weight="7" title="Tag - Scala">Scala</a></li> <li class="tag"><a href="/tag/Open Source" tag-weight="1" title="Tag - Open Source">Open Source</a></li> <li class="tag"><a href="/tag/Personal" tag-weight="1" title="Tag - Personal">Personal</a></li> <li class="tag"><a href="/tag/Travel" tag-weight="1" title="Tag - Travel">Travel</a></li> <li class="tag"><a href="/tag/Review" tag-weight="1" title="Tag - Review">Review</a></li> <li class="tag"><a href="/tag/tech" tag-weight="1" title="Tag - tech">tech</a></li> <li class="tag"><a href="/tag/profiling" tag-weight="1" title="Tag - profiling">profiling</a></li> <li class="tag"><a href="/tag/nature" tag-weight="1" title="Tag - nature">nature</a></li> <li class="tag"><a href="/tag/mountains" tag-weight="1" title="Tag - mountains">mountains</a></li> <li class="tag"><a href="/tag/Macros" tag-weight="2" title="Tag - Macros">Macros</a></li> <li class="tag"><a href="/tag/Tech" tag-weight="3" title="Tag - Tech">Tech</a></li> <li class="tag"><a href="/tag/R" tag-weight="1" title="Tag - R">R</a></li> </ul> 
   </div>
 </header>
 
@@ -108,7 +108,7 @@
 
 <p>Scala Macros are powerful, but very daunting.  I only had time to quickly poke at them in the past, and I always felt overwhelmed.  I couldn&rsquo;t figure out how to modify the existing examples to do what I wanted, even when I thought I wanted to implement something very basic.  I finally had a chance to make some sense of them, so I&rsquo;m sharing some tips I learned along the way.</p>
 
-<p>I had a specific goal in mind &mdash; I wanted my macro to supply definitions for abstract methods.  More specifically, the macro should supply definitions for
+<p>I had a specific goal in mind &ndash; I wanted my macro to supply definitions for abstract methods.  More specifically, the macro should supply definitions for
 <em>getters</em> of &lsquo;Int&rsquo;s and 'Float&rsquo;s, to read out of a 'ByteBuffer&rsquo;.  Eg., given this:</p>
 
 <script src="https://gist.github.com/squito/7094987.js?file=trait.scala"></script>
@@ -172,7 +172,7 @@ But as it turned out, I still had a lot to learn.</p>
 <script src="https://gist.github.com/squito/7094987.js?file=showRaw.scala"></script>
 
 
-<p>(Note that in the last example, showRaw actually gives an incorrect tree &mdash; we need to use <code>scalac</code> to get the right one.)</p>
+<p>(Note that in the last example, showRaw actually gives an incorrect tree &ndash; we need to use <code>scalac</code> to get the right one.)</p>
 
 <h3>Annotations</h3>
 
@@ -198,7 +198,7 @@ But as it turned out, I still had a lot to learn.</p>
 <script src="https://gist.github.com/squito/7094987.js?file=fullMacro.scala"></script>
 
 
-<p>The next step was to have my annotation add the trait as a parent in a macro.  Sounds simple, but I had a really hard time figuring out the syntax for declaring a parent class &mdash; because I was relying on <code>showRaw</code>.  After I switched to using <code>scalac</code> to show me the AST, I had no trouble at all.  The tree for adding <code>com.imranrashid.oleander.macros.SimpleTrait</code> as a parent was:</p>
+<p>The next step was to have my annotation add the trait as a parent in a macro.  Sounds simple, but I had a really hard time figuring out the syntax for declaring a parent class &ndash; because I was relying on <code>showRaw</code>.  After I switched to using <code>scalac</code> to show me the AST, I had no trouble at all.  The tree for adding <code>com.imranrashid.oleander.macros.SimpleTrait</code> as a parent was:</p>
 
 <script src="https://gist.github.com/squito/7094987.js?file=addedTrait.scala"></script>
 
@@ -207,7 +207,7 @@ But as it turned out, I still had a lot to learn.</p>
 
 <h3>Quasiquotes</h3>
 
-<p>I was feeling pretty good now that I had all this working.  But, those ASTs were a bit of a pain to write, and they were pretty hard to follow &mdash; two problems that quasiquotes were meant to solve.  I decided to give them another shot.</p>
+<p>I was feeling pretty good now that I had all this working.  But, those ASTs were a bit of a pain to write, and they were pretty hard to follow &ndash; two problems that quasiquotes were meant to solve.  I decided to give them another shot.</p>
 
 <p>First, to get quasiquotes working in the repl, I added one more import for implicit conversions:</p>
 
@@ -301,7 +301,7 @@ But as it turned out, I still had a lot to learn.</p>
 
 <p>So my macro needed to find all abstract methods in the referenced trait, and provide implementations of them.  For that, I&rsquo;d need to dive into <a href="http://docs.scala-lang.org/overviews/reflection/overview.html">Scala Reflection</a>, another new features in Scala 2.10.  This post is already pretty long, though, and I felt just learning the basics of macros is a good start, so I&rsquo;ll save that for another update.  Stay tuned.</p>
 
-<p>I hope you&rsquo;ve learned something from my experience &mdash; I sure wish I knew some of this at the very beginning.  I&rsquo;ve left out a lot of details, but I&rsquo;ve tried to focus on the major breakthroughs I made, the things I didn&rsquo;t find elsewhere (or at least, I didn&rsquo;t find right away).  Leave some comments if you found this useful, if you have other tips on learning macros (or if you have any corrections)!</p>
+<p>I hope you&rsquo;ve learned something from my experience &ndash; I sure wish I knew some of this at the very beginning.  I&rsquo;ve left out a lot of details, but I&rsquo;ve tried to focus on the major breakthroughs I made, the things I didn&rsquo;t find elsewhere (or at least, I didn&rsquo;t find right away).  Leave some comments if you found this useful, if you have other tips on learning macros (or if you have any corrections)!</p>
 
 <p><strong>UPDATE</strong> I&rsquo;ve just posted <a href="http://imranrashid.com/posts/scala-reflection/">part 2</a>, where I explore scala reflection and get my macro to work for any trait.</p>
 

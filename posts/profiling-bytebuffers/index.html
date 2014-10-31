@@ -90,7 +90,7 @@
     <div class='right'>
       <a href="https://github.com/squito" id="github"><i class='icon-github'></i></a>
     </div>
-    <ul class="tag-list" id="main-tag-list"><li class="tag"><a href="/tag/jekyll" tag-weight="1" title="Tag - jekyll">jekyll</a></li> <li class="tag"><a href="/tag/latex" tag-weight="1" title="Tag - latex">latex</a></li> <li class="tag"><a href="/tag/ML" tag-weight="2" title="Tag - ML">ML</a></li> <li class="tag"><a href="/tag/recipe" tag-weight="5" title="Tag - recipe">recipe</a></li> <li class="tag"><a href="/tag/book review" tag-weight="2" title="Tag - book review">book review</a></li> <li class="tag"><a href="/tag/Scala" tag-weight="7" title="Tag - Scala">Scala</a></li> <li class="tag"><a href="/tag/Open Source" tag-weight="1" title="Tag - Open Source">Open Source</a></li> <li class="tag"><a href="/tag/Personal" tag-weight="1" title="Tag - Personal">Personal</a></li> <li class="tag"><a href="/tag/Travel" tag-weight="1" title="Tag - Travel">Travel</a></li> <li class="tag"><a href="/tag/Review" tag-weight="1" title="Tag - Review">Review</a></li> <li class="tag"><a href="/tag/tech" tag-weight="1" title="Tag - tech">tech</a></li> <li class="tag"><a href="/tag/profiling" tag-weight="1" title="Tag - profiling">profiling</a></li> <li class="tag"><a href="/tag/nature" tag-weight="1" title="Tag - nature">nature</a></li> <li class="tag"><a href="/tag/mountains" tag-weight="1" title="Tag - mountains">mountains</a></li> <li class="tag"><a href="/tag/Macros" tag-weight="2" title="Tag - Macros">Macros</a></li> <li class="tag"><a href="/tag/Tech" tag-weight="2" title="Tag - Tech">Tech</a></li> </ul> 
+    <ul class="tag-list" id="main-tag-list"><li class="tag"><a href="/tag/jekyll" tag-weight="1" title="Tag - jekyll">jekyll</a></li> <li class="tag"><a href="/tag/latex" tag-weight="1" title="Tag - latex">latex</a></li> <li class="tag"><a href="/tag/ML" tag-weight="2" title="Tag - ML">ML</a></li> <li class="tag"><a href="/tag/recipe" tag-weight="5" title="Tag - recipe">recipe</a></li> <li class="tag"><a href="/tag/book review" tag-weight="2" title="Tag - book review">book review</a></li> <li class="tag"><a href="/tag/Scala" tag-weight="7" title="Tag - Scala">Scala</a></li> <li class="tag"><a href="/tag/Open Source" tag-weight="1" title="Tag - Open Source">Open Source</a></li> <li class="tag"><a href="/tag/Personal" tag-weight="1" title="Tag - Personal">Personal</a></li> <li class="tag"><a href="/tag/Travel" tag-weight="1" title="Tag - Travel">Travel</a></li> <li class="tag"><a href="/tag/Review" tag-weight="1" title="Tag - Review">Review</a></li> <li class="tag"><a href="/tag/tech" tag-weight="1" title="Tag - tech">tech</a></li> <li class="tag"><a href="/tag/profiling" tag-weight="1" title="Tag - profiling">profiling</a></li> <li class="tag"><a href="/tag/nature" tag-weight="1" title="Tag - nature">nature</a></li> <li class="tag"><a href="/tag/mountains" tag-weight="1" title="Tag - mountains">mountains</a></li> <li class="tag"><a href="/tag/Macros" tag-weight="2" title="Tag - Macros">Macros</a></li> <li class="tag"><a href="/tag/Tech" tag-weight="3" title="Tag - Tech">Tech</a></li> <li class="tag"><a href="/tag/R" tag-weight="1" title="Tag - R">R</a></li> </ul> 
   </div>
 </header>
 
@@ -121,15 +121,15 @@ more detail on some of the biggest puzzles &amp; surprises, but here are the key
 <li><p>Thyme is a great tool and its super easy to use.  I also really enjoyed Rex&rsquo;s <a href="https://speakerdeck.com/ichoran/designing-for-performance-scala-days-2013">slides from Scala Days 2013</a>.</p></li>
 <li><p>Reading ints &amp; floats from <a href="http://docs.oracle.com/javase/6/docs/api/java/nio/ByteBuffer.html#views">view buffers</a> is faster than calling
 <code>ByteBuffer.getFloat</code> / <code>ByteBuffer.getInt</code> directly.</p></li>
-<li><p>Reading from direct byte buffers is much faster than reading from normal (on-heap) byte buffers &mdash; the performance is very close to normal
+<li><p>Reading from direct byte buffers is much faster than reading from normal (on-heap) byte buffers &ndash; the performance is very close to normal
 arrays.  (The rest of the post only considers normal byte buffers)</p></li>
 <li><p>Reading from an on-heap <code>FloatBuffer</code> instead of an <code>Array[Float]</code> takes roughly twice as long.  This may sound terrible, but this
 is still tons faster than any data structures in the collections library.  Furthermore, it could be insignificant if you&rsquo;re doing any
-real calculations &mdash; the difference dropped to 15% if I added a call to <code>math.log()</code> on each float.</p></li>
+real calculations &ndash; the difference dropped to 15% if I added a call to <code>math.log()</code> on each float.</p></li>
 <li><p>Using interfaces has some tricky performance penalties because of the optimizations done by the JIT.  (Rex mentions
-this on slide 28).  What I learned is that hiding one implementation behind an interface doesn&rsquo;t have any performance impact &mdash; but
+this on slide 28).  What I learned is that hiding one implementation behind an interface doesn&rsquo;t have any performance impact &ndash; but
 there is a big impact if you have multiple implementations that are in active use.  I didn&rsquo;t understand this at first, and got
-<em>really</em> confusing results from my micro-benchmarks &mdash; more
+<em>really</em> confusing results from my micro-benchmarks &ndash; more
 on that below.</p></li>
 </ul>
 
@@ -144,7 +144,7 @@ on-heap byte buffers.</p>
 
 <h2>The Experiment</h2>
 
-<p>The basic test was very simple &mdash; compare the time required to sum 10 million floats stored in an array vs. 10 million floats
+<p>The basic test was very simple &ndash; compare the time required to sum 10 million floats stored in an array vs. 10 million floats
 stored in a byte buffer.  When reading floats from a byte buffer, you can either call <code>bb.getFloat(idx)</code> or first get a FloatBuffer
 view of the byte buffer, and then call <code>fb.get(idx)</code>, so I tried both.  I wanted to be sure that I was measuring the cost of
 reading the floats, not method calls or closures
@@ -218,7 +218,7 @@ only have one active implementation, or if multiple implementations will live si
 <ul>
 <li>If you want multiple implementations to live side-by-side in the same JVM, then you should run your tests in one JVM, but be sure to warm
 up <em>all</em> interfaces before running your test.  Note that if you first &ldquo;warm&rdquo; up each benchmark with <code>thyme.Warm</code>, and then run the benchmarks, you&rsquo;ll
-get the correct timing for each implementation.  <code>thyme.pbenchOff</code> (for doing a head-to-head comparison of two methods) <em>sort of</em> does the right thing &mdash;
+get the correct timing for each implementation.  <code>thyme.pbenchOff</code> (for doing a head-to-head comparison of two methods) <em>sort of</em> does the right thing &ndash;
 it will at least warn you that it senses something is wrong with the message &ldquo;Individual benchmarks not fully consistent with head-to-head (p ~= 0)&rdquo;.  But, it can only
 be used to compare two methods, and I&rsquo;ve observed that the big performance
 hits come with three or more implementations.</li>
@@ -242,8 +242,8 @@ the Type Class version, as that is probably unfamiliar to some readers:</p>
 
 
 <p>There was a huge difference between putting the implementations in <code>ArrayLike</code> versus having one implementation per concrete class.  This makes
-a lot of sense &mdash; by putting one implementation per concrete class, I&rsquo;ve moved dynamic dispatch out of the inner loop.  The 100 ms performance
-hit doesn&rsquo;t come from one dynamic dispatch call &mdash; it comes from 10 million of them.  Remember, though, that even though I can get the performance back
+a lot of sense &ndash; by putting one implementation per concrete class, I&rsquo;ve moved dynamic dispatch out of the inner loop.  The 100 ms performance
+hit doesn&rsquo;t come from one dynamic dispatch call &ndash; it comes from 10 million of them.  Remember, though, that even though I can get the performance back
 by writing three different implementations, I&rsquo;m back to my original problem of repeating code.</p>
 
 <p>The Type Class versions performed basically the same as adding the method to <code>ArrayLike</code>, with the same discrepancy between the &ldquo;generic&rdquo; and
@@ -268,7 +268,7 @@ than where I started.</p>
 
 <p>I&rsquo;ve got the <a href="https://github.com/squito/oleander/blob/blog_post_profiling_interfaces/src/test/scala/com/imranrashid/oleander/ByteBufferBackedTest.scala">complete version of my code</a>
 on Github.  Warning: the code is pretty ugly, partly out of necessity (I had to repeate those ugly while loops) and partly because I was frantically
-trying everything possible during my confusion.  (Note that the link is to a branch I&rsquo;ve created just for this blog post &mdash; I&rsquo;m going to rip most of it out in master.)</p>
+trying everything possible during my confusion.  (Note that the link is to a branch I&rsquo;ve created just for this blog post &ndash; I&rsquo;m going to rip most of it out in master.)</p>
 
     </div>
 

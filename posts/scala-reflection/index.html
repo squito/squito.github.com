@@ -90,7 +90,7 @@
     <div class='right'>
       <a href="https://github.com/squito" id="github"><i class='icon-github'></i></a>
     </div>
-    <ul class="tag-list" id="main-tag-list"><li class="tag"><a href="/tag/jekyll" tag-weight="1" title="Tag - jekyll">jekyll</a></li> <li class="tag"><a href="/tag/latex" tag-weight="1" title="Tag - latex">latex</a></li> <li class="tag"><a href="/tag/ML" tag-weight="2" title="Tag - ML">ML</a></li> <li class="tag"><a href="/tag/recipe" tag-weight="5" title="Tag - recipe">recipe</a></li> <li class="tag"><a href="/tag/book review" tag-weight="2" title="Tag - book review">book review</a></li> <li class="tag"><a href="/tag/Scala" tag-weight="7" title="Tag - Scala">Scala</a></li> <li class="tag"><a href="/tag/Open Source" tag-weight="1" title="Tag - Open Source">Open Source</a></li> <li class="tag"><a href="/tag/Personal" tag-weight="1" title="Tag - Personal">Personal</a></li> <li class="tag"><a href="/tag/Travel" tag-weight="1" title="Tag - Travel">Travel</a></li> <li class="tag"><a href="/tag/Review" tag-weight="1" title="Tag - Review">Review</a></li> <li class="tag"><a href="/tag/tech" tag-weight="1" title="Tag - tech">tech</a></li> <li class="tag"><a href="/tag/profiling" tag-weight="1" title="Tag - profiling">profiling</a></li> <li class="tag"><a href="/tag/nature" tag-weight="1" title="Tag - nature">nature</a></li> <li class="tag"><a href="/tag/mountains" tag-weight="1" title="Tag - mountains">mountains</a></li> <li class="tag"><a href="/tag/Macros" tag-weight="2" title="Tag - Macros">Macros</a></li> <li class="tag"><a href="/tag/Tech" tag-weight="2" title="Tag - Tech">Tech</a></li> </ul> 
+    <ul class="tag-list" id="main-tag-list"><li class="tag"><a href="/tag/jekyll" tag-weight="1" title="Tag - jekyll">jekyll</a></li> <li class="tag"><a href="/tag/latex" tag-weight="1" title="Tag - latex">latex</a></li> <li class="tag"><a href="/tag/ML" tag-weight="2" title="Tag - ML">ML</a></li> <li class="tag"><a href="/tag/recipe" tag-weight="5" title="Tag - recipe">recipe</a></li> <li class="tag"><a href="/tag/book review" tag-weight="2" title="Tag - book review">book review</a></li> <li class="tag"><a href="/tag/Scala" tag-weight="7" title="Tag - Scala">Scala</a></li> <li class="tag"><a href="/tag/Open Source" tag-weight="1" title="Tag - Open Source">Open Source</a></li> <li class="tag"><a href="/tag/Personal" tag-weight="1" title="Tag - Personal">Personal</a></li> <li class="tag"><a href="/tag/Travel" tag-weight="1" title="Tag - Travel">Travel</a></li> <li class="tag"><a href="/tag/Review" tag-weight="1" title="Tag - Review">Review</a></li> <li class="tag"><a href="/tag/tech" tag-weight="1" title="Tag - tech">tech</a></li> <li class="tag"><a href="/tag/profiling" tag-weight="1" title="Tag - profiling">profiling</a></li> <li class="tag"><a href="/tag/nature" tag-weight="1" title="Tag - nature">nature</a></li> <li class="tag"><a href="/tag/mountains" tag-weight="1" title="Tag - mountains">mountains</a></li> <li class="tag"><a href="/tag/Macros" tag-weight="2" title="Tag - Macros">Macros</a></li> <li class="tag"><a href="/tag/Tech" tag-weight="3" title="Tag - Tech">Tech</a></li> <li class="tag"><a href="/tag/R" tag-weight="1" title="Tag - R">R</a></li> </ul> 
   </div>
 </header>
 
@@ -117,7 +117,7 @@ and automatically generate a class that would read those fields from a <code>Byt
 <script src="https://gist.github.com/squito/7094987.js?file=goalClass.scala"></script>
 
 
-<p>In the previous post, I was only able to add the methods for one fixed trait &mdash; not very useful.
+<p>In the previous post, I was only able to add the methods for one fixed trait &ndash; not very useful.
 If I was
 going to be able to fill in the implementation for any trait, I&rsquo;d need to use scala reflection to figure out which methods I needed
 to add.
@@ -169,7 +169,7 @@ hoping something would look like <code>isDefined</code> or <code>isAbstract</cod
 
 
 <p>Hmm, scanning the list, i didn&rsquo;t see anything that jumped out at me.  The list of methods was too long to go through them all by hand.
-But then I realized &mdash; I could use reflection to call of those methods on both <code>x</code> and <code>y</code>, and see which ones yielded different results.  That is,
+But then I realized &ndash; I could use reflection to call of those methods on both <code>x</code> and <code>y</code>, and see which ones yielded different results.  That is,
 I&rsquo;d be getting <code>MethodSymbol</code>s that were members of <code>MethodSymbol</code>.   (Yes, there was probably an easier way, but now this just sounded fun.)</p>
 
 <p>To call methods using reflection, you first need to get a runtime mirror, from that get an instance mirror, and then finally from there you can call the methods:</p>
@@ -201,7 +201,7 @@ I&rsquo;d be getting <code>MethodSymbol</code>s that were members of <code>Metho
 
 <h2>Parameterizing Annotations</h2>
 
-<p>I&rsquo;ve got the basics of reflection &mdash; now I just needed to get a handle on the <code>Type</code> of my target trait inside my macro annotation.  This one was surprisingly difficult to figure out, I had to turn to stackoverflow and got the <a href="http://stackoverflow.com/questions/19791686/type-parameters-on-scala-macro-annotations">answer from Eugene Burmako</a>.</p>
+<p>I&rsquo;ve got the basics of reflection &ndash; now I just needed to get a handle on the <code>Type</code> of my target trait inside my macro annotation.  This one was surprisingly difficult to figure out, I had to turn to stackoverflow and got the <a href="http://stackoverflow.com/questions/19791686/type-parameters-on-scala-macro-annotations">answer from Eugene Burmako</a>.</p>
 
 <p>When using my macro annotation, I make the target trait a type parameter on the annotation class, and then pull it out of the type with a call to <code>typeCheck</code>:</p>
 
@@ -236,7 +236,7 @@ detail here.  But you can take a look at the <a href="https://github.com/squito/
 
 <h2>Conclusion</h2>
 
-<p>In these two blog posts, we&rsquo;ve learned how to use scala macro annotations to automatically expand a class definition so that it implements a trait.  Along the way we&rsquo;ve learned the basics of working with ASTs, how to simplify our lives with quasiquotes, and how to use reflection to explore types.  Our macro isn&rsquo;t the most robust yet &mdash; it could use a lot more error handling &mdash; but we&rsquo;ve got a taste for how everything works.</p>
+<p>In these two blog posts, we&rsquo;ve learned how to use scala macro annotations to automatically expand a class definition so that it implements a trait.  Along the way we&rsquo;ve learned the basics of working with ASTs, how to simplify our lives with quasiquotes, and how to use reflection to explore types.  Our macro isn&rsquo;t the most robust yet &ndash; it could use a lot more error handling &ndash; but we&rsquo;ve got a taste for how everything works.</p>
 
 <p>I won&rsquo;t promise more in this series, but there are few more ideas I&rsquo;d like to explore.  First, Eugene Burmako suggested that I could achieve the functionality I want in my library using normal macros, instead of macro annotations.  While it would change the user api somewhat, this is particularly appealing because
 macro annotations won&rsquo;t make it into scala until 2.12 at the earliest.</p>
