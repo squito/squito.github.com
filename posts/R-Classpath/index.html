@@ -122,6 +122,11 @@ too heavy-weight for some simple utility functions; I don&rsquo;t want to
 go through all the work of creating a package when I write a little util which stores our
 database configuration.</p>
 
+<p><em>Update</em>: If you <strong>do</strong> want to write a package, I highly recommend
+the <a href="http://cran.r-project.org/web/packages/devtools/index.html"><code>devtools</code></a> package and
+<a href="http://r-pkgs.had.co.nz/">Hadley Wickham&rsquo;s book on writing packages</a> (in
+progress, but lots of good content already available online).</p>
+
 <p>The other way to re-use your utility functions is to stick them in a plain <code>.R</code> file, and then
 <code>source()</code> that file whenever you want to use it.  This is perfect when you are working by yourself,
 and just on your on laptop.  But it doesn&rsquo;t work that well when you need to share your
@@ -192,13 +197,27 @@ then execute
 <code>launchctl &lt; ~/.launchd.conf</code></p>
 
 <p>Now that we&rsquo;ve got our utility functions nicely separated, so they are easier to reuse and maintain,
-the next step would be set some unit tests for them.  But, that will have to wait for a future blog
-post :)</p>
+the next step would be set some unit tests for them.  <del>But, that will have to wait for a future blog
+post :)</del> Hadley Wickham&rsquo;s book on R packages also has a good <a href="http://r-pkgs.had.co.nz/tests.html">section on unit
+testing</a>.</p>
 
 <p>I hope this was helpful &ndash; honestly this is a system I came up because there didn&rsquo;t seem to be a
 better way.  I&rsquo;m
 curious if bigger teams of R users have developed other ways of dealing with this problem, I&rsquo;d love
 to hear about it in the comments.</p>
+
+<p><em>Update</em>: Hadley Wickham <a href="https://twitter.com/hadleywickham/status/528184886050320385?cn=cmVwbHk%3D">commented on
+twitter</a> that I should
+just bite the bullet and write packages.  After that post, I took a closer look at the
+<a href="http://cran.r-project.org/web/packages/devtools/index.html"><code>devtools</code></a> package, and his <a href="http://r-pkgs.had.co.nz/">upcoming
+book</a>.  They definitely make the process of writing and using your own
+packages <em>much</em> easier.</p>
+
+<p>Its still a lot more complicated than just sticking your
+functions in a file, though.  By all
+means, if you are motivated to write a package, <em>do that
+instead</em>.  But I imagine there are many organizations where that simply won&rsquo;t happen because of the
+overhead involved.  Hopefully this is a happy-compromise in those situations.</p>
 
     </div>
 
