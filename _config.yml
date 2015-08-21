@@ -29,7 +29,7 @@ exclude:
 future: true
 lsi: false
 highlighter: pygments
-markdown: rdiscount
+markdown: kramdown
 permalink: "/posts/:title"
 
 rdiscount:
