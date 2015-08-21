@@ -272,7 +272,7 @@ example.  But if you try to rely on them, they might be incorrect in unexpected 
 <p>Say you deploy a Spark app for a regular batch ETL pipeline, that runs a few times a day as you ingest data.  Maybe you process logs from customer
 purchases, and you track total spend with a counter.  You may even have some alerting if spend levels are too high or too low.  You’ve unit-tested
 this logic, and even come to rely on it for escalations.  But if one node in your cluster happens to go down, Spark may happily report the job
-completes successfully, though your counter could be off an arbitrary amount.  So you get an alert at 2 AM that spend was too high, when it was
+completes successfully, though your counter could be off an arbitrary amount.<sup id="fnref:no-fault-tolerance"><a href="#fn:no-fault-tolerance" class="footnote">2</a></sup>  So you get an alert at 2 AM that spend was too high, when it was
 really just fine.  Or even worse, you fail to get an alert when spend is too low, don’t notice for far too long.  By the time you figure this
 out, you are already in hot water.</p>
 
@@ -281,19 +281,20 @@ correctly reporting errors as you try it out on a handful of different data sets
 has a far higher percentage of errors than any other.  So you decide to spend some time investigating why this dataset is different.  Oh, 
 wait … its simply
 that this particular dataset was bigger, so it didn’t fit in the cache.  Your code made multiple passes over the parsed data (which you expected to 
-be cached in memory), so your counters have over-counted.  No big deal, you just lost one week of your life chasing phantoms. <sup id="fnref:worst-possible"><a href="#fn:worst-possible" class="footnote">2</a></sup></p>
+be cached in memory), so your counters have over-counted.  No big deal, you just lost one week of your life chasing phantoms. <sup id="fnref:worst-possible"><a href="#fn:worst-possible" class="footnote">3</a></sup></p>
 
 <p>To be fair, this is all explained in <a href="http://spark.apache.org/docs/latest/programming-guide.html#accumulators-a-nameaccumlinka">Spark’s Programming Guide</a>.
 However, it can easily seem like these limitations are just for a small corner case, when in fact, they make accumulators a totally incomplete 
-replacement for MapReduce counters<sup id="fnref:exception-in-transformation"><a href="#fn:exception-in-transformation" class="footnote">3</a></sup>.  If
-you do try to use accumulators outside of RDD actions, they are worse than useless – they are actively misleading. <sup id="fnref:and-speculation"><a href="#fn:and-speculation" class="footnote">4</a></sup></p>
+replacement for MapReduce counters<sup id="fnref:exception-in-transformation"><a href="#fn:exception-in-transformation" class="footnote">4</a></sup>.  If
+you do try to use accumulators outside of RDD actions, they are worse than useless – they are actively misleading. <sup id="fnref:and-speculation"><a href="#fn:and-speculation" class="footnote">5</a></sup></p>
 
 <h1 id="what-should-spark-have">What Should Spark Have?</h1>
 
 <p>We’re unable to fix these problems with accumulators directly due to backwards compatibility (at least in Spark 1.x).  As strange (and useless) as
 these semantics are for accumulators, that behavior can’t be changed.  For example, if you are using accumulators to profile your code by tracking
 time spent in various parts of your code (our original use case #3), then it may be useful to count the time spent when recomputing an RDD that
-isn’t cached.  Furthermore, other fixes requires changes to the api that just aren’t compatible.  For example, the current muddling together of
+isn’t cached.  This is fundamentally at odds with a metric that only depends on the input data, for use cases #1 and #4.  Furthermore, solving some 
+of these problems require changes to the api that just aren’t compatible.  For example, the current muddling together of
 simple counters with a more complex system for arbitrary computation on the data is one source of the problem.</p>
 
 <p>I believe the first step is to provide a new api which aims to just provide good counters, and nothing more.  Here’s an eample of what it might look like:</p>
@@ -325,6 +326,9 @@ don’t understand the minefield they are walking into.</p>
   <ol>
     <li id="fn:nobody-understands">
       <p>I strongly suspect that the number of people that understand all the intricacies of stage retries is exactly 0. <a href="#fnref:nobody-understands" class="reversefootnote">&#8617;</a></p>
+    </li>
+    <li id="fn:no-fault-tolerance">
+      <p>Though you’d be ill-advised to rely on Spark for fault-tolerance in any case, given <a href="https://issues.apache.org/jira/browse/SPARK-5259">SPARK-5259</a>, <a href="https://issues.apache.org/jira/browse/SPARK-5945">SPARK-5945</a>, <a href="https://issues.apache.org/jira/browse/SPARK-8029">SPARK-8029</a>, and <a href="https://issues.apache.org/jira/browse/SPARK-8103">SPARK-8103</a>. <a href="#fnref:no-fault-tolerance" class="reversefootnote">&#8617;</a></p>
     </li>
     <li id="fn:worst-possible">
       <p>This is the worst-possible behavior of a big-data system.  Pretend that everything is simple and easy on small examples you can run locally; but when run on large data sets, produce garbage data for reasons you can’t possibly expect the average user to understand. <a href="#fnref:worst-possible" class="reversefootnote">&#8617;</a></p>
