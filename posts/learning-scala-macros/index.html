@@ -90,7 +90,7 @@
     <div class='right'>
       <a href="https://github.com/squito" id="github"><i class='icon-github'></i></a>
     </div>
-    <ul class="tag-list" id="main-tag-list"><li class="tag"><a href="/tag/jekyll" tag-weight="1" title="Tag - jekyll">jekyll</a></li> <li class="tag"><a href="/tag/latex" tag-weight="1" title="Tag - latex">latex</a></li> <li class="tag"><a href="/tag/ML" tag-weight="2" title="Tag - ML">ML</a></li> <li class="tag"><a href="/tag/recipe" tag-weight="5" title="Tag - recipe">recipe</a></li> <li class="tag"><a href="/tag/book review" tag-weight="2" title="Tag - book review">book review</a></li> <li class="tag"><a href="/tag/Scala" tag-weight="7" title="Tag - Scala">Scala</a></li> <li class="tag"><a href="/tag/Open Source" tag-weight="1" title="Tag - Open Source">Open Source</a></li> <li class="tag"><a href="/tag/Personal" tag-weight="1" title="Tag - Personal">Personal</a></li> <li class="tag"><a href="/tag/Travel" tag-weight="1" title="Tag - Travel">Travel</a></li> <li class="tag"><a href="/tag/Review" tag-weight="1" title="Tag - Review">Review</a></li> <li class="tag"><a href="/tag/tech" tag-weight="1" title="Tag - tech">tech</a></li> <li class="tag"><a href="/tag/profiling" tag-weight="1" title="Tag - profiling">profiling</a></li> <li class="tag"><a href="/tag/nature" tag-weight="1" title="Tag - nature">nature</a></li> <li class="tag"><a href="/tag/mountains" tag-weight="1" title="Tag - mountains">mountains</a></li> <li class="tag"><a href="/tag/Macros" tag-weight="2" title="Tag - Macros">Macros</a></li> <li class="tag"><a href="/tag/Tech" tag-weight="3" title="Tag - Tech">Tech</a></li> <li class="tag"><a href="/tag/R" tag-weight="1" title="Tag - R">R</a></li> </ul> 
+    <ul class="tag-list" id="main-tag-list"><li class="tag"><a href="/tag/jekyll" tag-weight="1" title="Tag - jekyll">jekyll</a></li> <li class="tag"><a href="/tag/latex" tag-weight="1" title="Tag - latex">latex</a></li> <li class="tag"><a href="/tag/ML" tag-weight="2" title="Tag - ML">ML</a></li> <li class="tag"><a href="/tag/recipe" tag-weight="5" title="Tag - recipe">recipe</a></li> <li class="tag"><a href="/tag/book review" tag-weight="2" title="Tag - book review">book review</a></li> <li class="tag"><a href="/tag/Scala" tag-weight="7" title="Tag - Scala">Scala</a></li> <li class="tag"><a href="/tag/Open Source" tag-weight="1" title="Tag - Open Source">Open Source</a></li> <li class="tag"><a href="/tag/Personal" tag-weight="1" title="Tag - Personal">Personal</a></li> <li class="tag"><a href="/tag/Travel" tag-weight="1" title="Tag - Travel">Travel</a></li> <li class="tag"><a href="/tag/Review" tag-weight="1" title="Tag - Review">Review</a></li> <li class="tag"><a href="/tag/tech" tag-weight="1" title="Tag - tech">tech</a></li> <li class="tag"><a href="/tag/profiling" tag-weight="1" title="Tag - profiling">profiling</a></li> <li class="tag"><a href="/tag/nature" tag-weight="1" title="Tag - nature">nature</a></li> <li class="tag"><a href="/tag/mountains" tag-weight="1" title="Tag - mountains">mountains</a></li> <li class="tag"><a href="/tag/Macros" tag-weight="2" title="Tag - Macros">Macros</a></li> <li class="tag"><a href="/tag/Tech" tag-weight="4" title="Tag - Tech">Tech</a></li> <li class="tag"><a href="/tag/R" tag-weight="1" title="Tag - R">R</a></li> <li class="tag"><a href="/tag/Spark" tag-weight="1" title="Tag - Spark">Spark</a></li> </ul> 
   </div>
 </header>
 
@@ -104,206 +104,183 @@
 <div class="content">
   <div id="post">
     <div class="body">
-      <h2>Learning to Learn</h2>
+      <h2 id="learning-to-learn">Learning to Learn</h2>
 
-<p>Scala Macros are powerful, but very daunting.  I only had time to quickly poke at them in the past, and I always felt overwhelmed.  I couldn&rsquo;t figure out how to modify the existing examples to do what I wanted, even when I thought I wanted to implement something very basic.  I finally had a chance to make some sense of them, so I&rsquo;m sharing some tips I learned along the way.</p>
+<p>Scala Macros are powerful, but very daunting.  I only had time to quickly poke at them in the past, and I always felt overwhelmed.  I couldn’t figure out how to modify the existing examples to do what I wanted, even when I thought I wanted to implement something very basic.  I finally had a chance to make some sense of them, so I’m sharing some tips I learned along the way. </p>
 
-<p>I had a specific goal in mind &ndash; I wanted my macro to supply definitions for abstract methods.  More specifically, the macro should supply definitions for
-<em>getters</em> of &lsquo;Int&rsquo;s and 'Float&rsquo;s, to read out of a 'ByteBuffer&rsquo;.  Eg., given this:</p>
+<p>I had a specific goal in mind – I wanted my macro to supply definitions for abstract methods.  More specifically, the macro should supply definitions for
+<em>getters</em> of ‘Int’s and ‘Float’s, to read out of a ‘ByteBuffer’.  Eg., given this:</p>
 
 <script src="https://gist.github.com/squito/7094987.js?file=trait.scala"></script>
-
 
 <p>My macro should generate the equivalent of</p>
 
 <script src="https://gist.github.com/squito/7094987.js?file=goalClass.scala"></script>
 
-
 <p>The idea seemed pretty simple, but I knew there would be a lot to learn about macros before I could make it happen.</p>
 
-<p>(This idea is related to another project of mine, <a href="https://github.com/squito/oleander">Oleander</a>, which will read data directly from ByteBuffers for a variety of reasons.  However, that&rsquo;s not nearly ready for real use yet.  For now, this is just a way for me to learn.)</p>
+<p>(This idea is related to another project of mine, <a href="https://github.com/squito/oleander">Oleander</a>, which will read data directly from ByteBuffers for a variety of reasons.  However, that’s not nearly ready for real use yet.  For now, this is just a way for me to learn.)</p>
 
-<p><strong>WARNING</strong> This is <em>not</em> a tutorial.  I&rsquo;m not an expert by any means.  But I did get macros to do what I wanted in the end, and I even put the working examples into a <a href="https://github.com/squito/learn_macros">repo on github</a> with the full sbt build configuration.  I do think you will learn a lot (and save a lot of time) if you read my advice on Learning ASTs and start from the example repo.</p>
+<p><strong>WARNING</strong> This is <em>not</em> a tutorial.  I’m not an expert by any means.  But I did get macros to do what I wanted in the end, and I even put the working examples into a <a href="https://github.com/squito/learn_macros">repo on github</a> with the full sbt build configuration.  I do think you will learn a lot (and save a lot of time) if you read my advice on Learning ASTs and start from the example repo.</p>
 
-<h2>First Steps</h2>
+<h2 id="first-steps">First Steps</h2>
 
 <p>After doing a bit of search for a good, basic tutorial, I decided to follow this <a href="http://www.warski.org/blog/2012/12/starting-with-scala-macros-a-short-tutorial/">great blog post</a> with an intro to macros.:
 It was very straightforward, with a complete project set up, and even had a useful example.  I learned</p>
 
 <ul>
-<li>basic project setup</li>
-<li>simple macro defs</li>
-<li>a few basics on working with Abstract Syntax Trees (ASTs)</li>
+  <li>basic project setup</li>
+  <li>simple macro defs</li>
+  <li>a few basics on working with Abstract Syntax Trees (ASTs)</li>
 </ul>
 
-
-<p>At this point, I thought this was going to be a piece of cake.  I figured a few simple modifications to those examples, and I&rsquo;d have my macro.
+<p>At this point, I thought this was going to be a piece of cake.  I figured a few simple modifications to those examples, and I’d have my macro.
 But as it turned out, I still had a lot to learn.</p>
 
-<h2>Hope and Despair</h2>
+<h2 id="hope-and-despair">Hope and Despair</h2>
 
-<p>After doing a bit more reading, I realized that the latest and greatest version of macros came with <a href="http://docs.scala-lang.org/overviews/macros/paradise.html">Macro Paradise</a>.  From this point on, I was using scala 2.10.2, plus the macro-paradise 2.0.0-SNAPSHOT-jar.  It seemed like things were going to be <em>even easier</em> because I could use <a href="http://docs.scala-lang.org/overviews/macros/quasiquotes.html">Quasiquotes</a>.  Sure, I didn&rsquo;t understand them yet, but they promised to make all my problems magically disappear.</p>
+<p>After doing a bit more reading, I realized that the latest and greatest version of macros came with <a href="http://docs.scala-lang.org/overviews/macros/paradise.html">Macro Paradise</a>.  From this point on, I was using scala 2.10.2, plus the macro-paradise 2.0.0-SNAPSHOT-jar.  It seemed like things were going to be <em>even easier</em> because I could use <a href="http://docs.scala-lang.org/overviews/macros/quasiquotes.html">Quasiquotes</a>.  Sure, I didn’t understand them yet, but they promised to make all my problems magically disappear.</p>
 
-<p>I won&rsquo;t go into all the gory details here, but lets just say I wasted a ton of time with random experiments, getting lots of weird, inexplicable errors.  I thought I could avoid learning ASTs with Quasiquotes, but I kept getting error messages that were just a  lot of AST gibberish.  Even without quasiquotes I was often really lost.  (Just to get a sense of the feeling of hopelessness, take a look at <a href="https://gist.github.com/squito/6597917">this error msg</a>.)  I even managed to slay the compiler a few times, that was fun.</p>
+<p>I won’t go into all the gory details here, but lets just say I wasted a ton of time with random experiments, getting lots of weird, inexplicable errors.  I thought I could avoid learning ASTs with Quasiquotes, but I kept getting error messages that were just a  lot of AST gibberish.  Even without quasiquotes I was often really lost.  (Just to get a sense of the feeling of hopelessness, take a look at <a href="https://gist.github.com/squito/6597917">this error msg</a>.)  I even managed to slay the compiler a few times, that was fun.  </p>
 
-<h2>Getting Basic ClassDefs workings</h2>
+<h2 id="getting-basic-classdefs-workings">Getting Basic ClassDefs workings</h2>
 
 <p>I was getting really frustrated, but I felt I had put in too much effort to give up at this point.  I decided to be a bit more methodical.  So I stepped back, did a bit of reading, and found some better tools to works with ASTs, and started again.</p>
 
-<h3>Learning ASTs</h3>
+<h3 id="learning-asts">Learning ASTs</h3>
 
 <ul>
-<li>The <a href="http://infoscience.epfl.ch/record/185242/files/QuasiquotesForScala.pdf">academic paper on quasiquotes</a> was quite useful; it actually has some nice simple examples, you only need to read the first 4 pages.  It helped me learn about both Quasiquotes, and ASTs in general</li>
-<li>Probably the most useful thing I learned was to <strong>not</strong> rely on <code>showRaw</code> as the only way to learn ASTs.  <code>showRaw</code> is great because it&rsquo;s so easy to use, but sometimes the tree it shows you is not the tree you want.  Sometimes, if you copy those trees verbatim, you just get some obscure compiler error.</li>
-<li><p>The <strong>foolproof</strong> way (in my experience) to get the correct AST is to ask <code>scalac</code> to do it for you, as <a href="http://stackoverflow.com/questions/14790115/where-can-i-learn-about-constructing-asts-for-scala-macros/14795999#14795999">Eugene Burmako explains in this SO answer</a>.  So I&rsquo;d put some example code in a .scala file, and then run
-<code>scalac -Xplugin macro-paradise_2.10.2-2.0.0-SNAPSHOT.jar -deprecation -Xprint:parser -Ystop-after:parser -Yshow-trees-compact *.scala</code></p></li>
-<li><p>Though I no longer relied exclusively on <code>showRaw</code> to learn ASTs, I still tried it out first, especially after I learned how to use it quickly in the repl.  (If something went wrong, I&rsquo;d fall back on <code>scalac</code>.)  To start a repl session with the compiler plugin &amp; the appropriate imports, I&rsquo;d run
-<code>scala -Xplugin macro-paradise_2.10.2-2.0.0-SNAPSHOT.jar</code></p></li>
+  <li>The <a href="http://infoscience.epfl.ch/record/185242/files/QuasiquotesForScala.pdf">academic paper on quasiquotes</a> was quite useful; it actually has some nice simple examples, you only need to read the first 4 pages.  It helped me learn about both Quasiquotes, and ASTs in general</li>
+  <li>Probably the most useful thing I learned was to <strong>not</strong> rely on <code>showRaw</code> as the only way to learn ASTs.  <code>showRaw</code> is great because it’s so easy to use, but sometimes the tree it shows you is not the tree you want.  Sometimes, if you copy those trees verbatim, you just get some obscure compiler error.</li>
+  <li>
+    <p>The <strong>foolproof</strong> way (in my experience) to get the correct AST is to ask <code>scalac</code> to do it for you, as <a href="http://stackoverflow.com/questions/14790115/where-can-i-learn-about-constructing-asts-for-scala-macros/14795999#14795999">Eugene Burmako explains in this SO answer</a>.  So I’d put some example code in a .scala file, and then run 
+<code>scalac -Xplugin macro-paradise_2.10.2-2.0.0-SNAPSHOT.jar -deprecation -Xprint:parser -Ystop-after:parser -Yshow-trees-compact *.scala</code>  </p>
+  </li>
+  <li>Though I no longer relied exclusively on <code>showRaw</code> to learn ASTs, I still tried it out first, especially after I learned how to use it quickly in the repl.  (If something went wrong, I’d fall back on <code>scalac</code>.)  To start a repl session with the compiler plugin &amp; the appropriate imports, I’d run 
+<code>scala -Xplugin macro-paradise_2.10.2-2.0.0-SNAPSHOT.jar</code></li>
 </ul>
-
 
 <p>then paste in</p>
 
 <script src="https://gist.github.com/squito/7094987.js?file=replImports.scala"></script>
 
-
-<p>For example, here&rsquo;s the way I&rsquo;d discover some basic trees:</p>
+<p>For example, here’s the way I’d discover some basic trees:</p>
 
 <script src="https://gist.github.com/squito/7094987.js?file=showRaw.scala"></script>
 
+<p>(Note that in the last example, showRaw actually gives an incorrect tree – we need to use <code>scalac</code> to get the right one.)</p>
 
-<p>(Note that in the last example, showRaw actually gives an incorrect tree &ndash; we need to use <code>scalac</code> to get the right one.)</p>
+<h3 id="annotations">Annotations</h3>
 
-<h3>Annotations</h3>
-
-<p>Now I was ready to start making my macro.  First of all, I learned that in order to <a href="https://groups.google.com/d/msg/scala-user/97ARwwoaq2U/kIGWeiqSGzcJ">add public methods to a class</a>, I&rsquo;d need to use <a href="http://docs.scala-lang.org/overviews/macros/annotations.html">Macro Annotations</a>.  They might not even make it into 2.11, but they are available through the macro-paradise compiler plugin even with 2.10, so I decided to still go for it.</p>
+<p>Now I was ready to start making my macro.  First of all, I learned that in order to <a href="https://groups.google.com/d/msg/scala-user/97ARwwoaq2U/kIGWeiqSGzcJ">add public methods to a class</a>, I’d need to use <a href="http://docs.scala-lang.org/overviews/macros/annotations.html">Macro Annotations</a>.  They might not even make it into 2.11, but they are available through the macro-paradise compiler plugin even with 2.10, so I decided to still go for it.</p>
 
 <p>To start slowly, I wanted to see if my macro could add definitions to a class, where I just hardcoded the missing methods.  Specifically, I wanted this to work:</p>
 
 <script src="https://gist.github.com/squito/7094987.js?file=annotationsGoal.scala"></script>
 
-
-<p>Without the macro, that code gives a compiler error, because <code>Foo</code> does not implement <code>x</code> or <code>y</code>.  I made <code>@FillInTraitDefs</code> provide the missing definitions with a macro.  First, I found the AST for the defs I wanted to add (I didn&rsquo;t particularly care what <code>x</code> or <code>y</code> did).</p>
+<p>Without the macro, that code gives a compiler error, because <code>Foo</code> does not implement <code>x</code> or <code>y</code>.  I made <code>@FillInTraitDefs</code> provide the missing definitions with a macro.  First, I found the AST for the defs I wanted to add (I didn’t particularly care what <code>x</code> or <code>y</code> did).</p>
 
 <script src="https://gist.github.com/squito/7094987.js?file=reify.scala"></script>
-
 
 <p>Similarly, I discovered the structure for classes, and figured out where the defs go:</p>
 
 <pre><code>ClassDef(modifiers, name, _, Template(parents, _, defs))
 </code></pre>
 
-<p>Though I didn&rsquo;t learn what all the parts were, I knew enough for what I needed.  Now I could put the pieces together:</p>
+<p>Though I didn’t learn what all the parts were, I knew enough for what I needed.  Now I could put the pieces together:</p>
 
 <script src="https://gist.github.com/squito/7094987.js?file=fullMacro.scala"></script>
 
-
-<p>The next step was to have my annotation add the trait as a parent in a macro.  Sounds simple, but I had a really hard time figuring out the syntax for declaring a parent class &ndash; because I was relying on <code>showRaw</code>.  After I switched to using <code>scalac</code> to show me the AST, I had no trouble at all.  The tree for adding <code>com.imranrashid.oleander.macros.SimpleTrait</code> as a parent was:</p>
+<p>The next step was to have my annotation add the trait as a parent in a macro.  Sounds simple, but I had a really hard time figuring out the syntax for declaring a parent class – because I was relying on <code>showRaw</code>.  After I switched to using <code>scalac</code> to show me the AST, I had no trouble at all.  The tree for adding <code>com.imranrashid.oleander.macros.SimpleTrait</code> as a parent was:</p>
 
 <script src="https://gist.github.com/squito/7094987.js?file=addedTrait.scala"></script>
 
-
 <p>Everything seemed to be working pretty well, so I put together <a href="https://github.com/squito/learn_macros/blob/master/macrotests/src/test/scala/com/imranrashid/oleander/macros/SimpleTraitFillInTest.scala#L8">a few unit tests</a> to confirm it worked as I expected.  The tests confirmed that I could add defs to my classes, make them extend a trait, and not lose any of their existing definitions.</p>
 
-<h3>Quasiquotes</h3>
+<h3 id="quasiquotes">Quasiquotes</h3>
 
-<p>I was feeling pretty good now that I had all this working.  But, those ASTs were a bit of a pain to write, and they were pretty hard to follow &ndash; two problems that quasiquotes were meant to solve.  I decided to give them another shot.</p>
+<p>I was feeling pretty good now that I had all this working.  But, those ASTs were a bit of a pain to write, and they were pretty hard to follow – two problems that quasiquotes were meant to solve.  I decided to give them another shot.</p>
 
-<p>First, to get quasiquotes working in the repl, I added one more import for implicit conversions:</p>
+<p>First, to get quasiquotes working in the repl, I added one more import for implicit conversions:  </p>
 
 <script src="https://gist.github.com/squito/7094987.js?file=quasiReplImports.scala"></script>
-
 
 <p>Now I could try out generating trees in the repl with quasiquotes:</p>
 
 <script src="https://gist.github.com/squito/7094987.js?file=quasiDefDef.scala"></script>
 
-
 <p>Not bad!  That was pretty easy.  In fact, you can even use quasiquotes to <em>deconstruct</em> trees.  It takes a little while to get the syntax right, but the best way to learn is to play around in the repl.  For example, to find the syntax for multiple traits, first I created an example tree:</p>
 
 <script src="https://gist.github.com/squito/7094987.js?file=quasiClassDef.scala"></script>
-
 
 <p>and after some trial and I error, I found I could pull it apart with:</p>
 
 <script src="https://gist.github.com/squito/7094987.js?file=quasiClassDefUnapply.scala"></script>
 
-
 <p>This was fantastic!  Remember the headache of figuring out how to declare a parent class when we were building the trees by hand?  Now I could just let quasiquotes do it for me!</p>
 
 <script src="https://gist.github.com/squito/7094987.js?file=quasiParentClass.scala"></script>
 
-
-<p>I&rsquo;m glancing over a lot of details here, but hopefully this will help you make some sense of the <a href="http://docs.scala-lang.org/overviews/macros/quasiquotes.html">very terse documentation</a>.  There are a few gotchas; in particular, with Lists of trees, you must</p>
+<p>I’m glancing over a lot of details here, but hopefully this will help you make some sense of the <a href="http://docs.scala-lang.org/overviews/macros/quasiquotes.html">very terse documentation</a>.  There are a few gotchas; in particular, with Lists of trees, you must</p>
 
 <ol>
-<li>cast everything to <code>List[Tree]</code></li>
-<li>after merging lists of trees together, call <code>.toList</code></li>
+  <li>cast everything to <code>List[Tree]</code></li>
+  <li>after merging lists of trees together, call <code>.toList</code></li>
 </ol>
 
+<p>both of these are hinted at in the docs on quasiquotes and the <a href="https://gist.github.com/anonymous/7ab617d054f28d68901b">linked gist</a>, but aren’t fully explained .  I hope these two rules, plus <a href="https://github.com/squito/learn_macros/blob/master/macros/src/main/scala/com/imranrashid/oleander/macros/FillTraitDefs.scala#L78">my example code</a> make it more clear.</p>
 
-<p>both of these are hinted at in the docs on quasiquotes and the <a href="https://gist.github.com/anonymous/7ab617d054f28d68901b">linked gist</a>, but aren&rsquo;t fully explained .  I hope these two rules, plus <a href="https://github.com/squito/learn_macros/blob/master/macros/src/main/scala/com/imranrashid/oleander/macros/FillTraitDefs.scala#L78">my example code</a> make it more clear.</p>
+<h4 id="short-detour-trees-exprs-and-quasiquotes">Short Detour: Trees, Exprs, and Quasiquotes</h4>
 
-<h4>Short Detour: Trees, Exprs, and Quasiquotes</h4>
-
-<p>Eugene Burmako gave me some feedback which made me realize I didn&rsquo;t fully explain one of my initial stumbling blocks with quasiquotes.  For a total beginner like me, you might think that quasiquotes are a complete drop-in replacement for <code>reify</code>.  If you followed along the tutorial on creating a <code>debug</code> macro, you might naively try to translate it to quasiquotes like so:</p>
+<p>Eugene Burmako gave me some feedback which made me realize I didn’t fully explain one of my initial stumbling blocks with quasiquotes.  For a total beginner like me, you might think that quasiquotes are a complete drop-in replacement for <code>reify</code>.  If you followed along the tutorial on creating a <code>debug</code> macro, you might naively try to translate it to quasiquotes like so:</p>
 
 <script src="https://gist.github.com/squito/7156004.js?file=wrongDebug.scala"></script>
 
+<p>Huh?  What’s an <code>Apply</code>?  How do I make an <code>Expr</code>?</p>
 
-<p>Huh?  What&rsquo;s an <code>Apply</code>?  How do I make an <code>Expr</code>?</p>
-
-<p>There is one really small difference between <code>reify</code> and quasiquotes.  While quasiquotes returns a <code>Tree</code>, <code>reify</code> gives you an <code>Expr</code>, which &ldquo;simply wraps a <code>Tree</code> and a <code>TypeTag</code>&rdquo; (from the <a href="http://docs.scala-lang.org/overviews/reflection/symbols-trees-types.html">reflection docs</a>).  So, <code>Apply</code> is just a <code>Tree</code>.  You can convert a <code>Tree</code> into an <code>Expr</code> by simply calling <code>c.Expr</code>.  So we just need a simple modification to our example, and now its happy:</p>
+<p>There is one really small difference between <code>reify</code> and quasiquotes.  While quasiquotes returns a <code>Tree</code>, <code>reify</code> gives you an <code>Expr</code>, which “simply wraps a <code>Tree</code> and a <code>TypeTag</code>” (from the <a href="http://docs.scala-lang.org/overviews/reflection/symbols-trees-types.html">reflection docs</a>).  So, <code>Apply</code> is just a <code>Tree</code>.  You can convert a <code>Tree</code> into an <code>Expr</code> by simply calling <code>c.Expr</code>.  So we just need a simple modification to our example, and now its happy:</p>
 
 <script src="https://gist.github.com/squito/7156004.js?file=correctDebugMacro.scala"></script>
-
 
 <p>And now it works as expected:</p>
 
 <script src="https://gist.github.com/squito/7156004.js?file=useDebug.scala"></script>
 
-
-<p>Its also worth noting, that you need to do something similar when working with the <em>inputs</em> to your macros.  If you are using macro annotations, then you can just call <code>.tree</code> on your input.  But if you are using regular macros, note that input also gets wrapped in a <code>Block</code>.  This can lead to some confusing errors.  Here&rsquo;s a silly example, with a macro that that extracts the right-hand side of a <code>val</code>:</p>
+<p>Its also worth noting, that you need to do something similar when working with the <em>inputs</em> to your macros.  If you are using macro annotations, then you can just call <code>.tree</code> on your input.  But if you are using regular macros, note that input also gets wrapped in a <code>Block</code>.  This can lead to some confusing errors.  Here’s a silly example, with a macro that that extracts the right-hand side of a <code>val</code>:</p>
 
 <script src="https://gist.github.com/squito/7156004.js?file=badValDefMacro.scala"></script>
-
 
 <p>Why did I get that match error?  It wanted a val definition, I gave it a val definition!  But we can look under the covers more closely with <code>showRaw</code>.  Quasiquotes expects to deconstruct a tree like this:</p>
 
 <script src="https://gist.github.com/squito/7156004.js?file=quasiValDefTree.scala"></script>
 
-
 <p>But if we look at the actual input we are passing to the macro:</p>
 
 <script src="https://gist.github.com/squito/7156004.js?file=macroValDefInput.scala"></script>
-
 
 <p>We see that when calling the macro, our input actually gets wrapped in a <code>Block(List(...),Literal(Constant()))</code>.  That is why our match was failing!  Easy enough to handle that, and now our macro works:</p>
 
 <script src="https://gist.github.com/squito/7156004.js?file=correctValDefMacro.scala"></script>
 
+<h3 id="generating-asts-with-reify">Generating ASTs with reify</h3>
 
-<h3>Generating ASTs with reify</h3>
-
-<p>Even if you don&rsquo;t use quasiquotes, you can potentially generate some parts of the AST using reify.  But again, it requires you to know some internals of how ASTs get wrapped up by reify before you can use them.  For example, instead of specifying our trees for the new <code>DefDef</code>s manually, we could have done this:</p>
+<p>Even if you don’t use quasiquotes, you can potentially generate some parts of the AST using reify.  But again, it requires you to know some internals of how ASTs get wrapped up by reify before you can use them.  For example, instead of specifying our trees for the new <code>DefDef</code>s manually, we could have done this:</p>
 
 <script src="https://gist.github.com/squito/7094987.js?file=reifyDefDefs.scala"></script>
 
+<p>The extra <code>.tree</code> and pattern match are necesary because <code>reify</code> wraps the defs into an <code>Expr(Block(...))</code>.  Simple once you know about it, but really confusing before you know what to look for.  By the time I figured this out, I already learned quasiquotes, so I just stuck with them.  Also, quasiquotes make it easier to pattern match against trees, which you can’t do with just <code>reify</code>.  Still, it’s up to you which way you would prefer to generate trees.</p>
 
-<p>The extra <code>.tree</code> and pattern match are necesary because <code>reify</code> wraps the defs into an <code>Expr(Block(...))</code>.  Simple once you know about it, but really confusing before you know what to look for.  By the time I figured this out, I already learned quasiquotes, so I just stuck with them.  Also, quasiquotes make it easier to pattern match against trees, which you can&rsquo;t do with just <code>reify</code>.  Still, it&rsquo;s up to you which way you would prefer to generate trees.</p>
-
-<h2>Next Steps</h2>
+<h2 id="next-steps">Next Steps</h2>
 
 <p>Now I had macros to fill in method definitions and add in a trait as a parent class.  The only problem was, I hard-coded those methods and traits!  I really wanted my macro to work for any trait.  Eg., I wanted it to work for a case like this:</p>
 
 <script src="https://gist.github.com/squito/7094987.js?file=dynamicTraitGoal.scala"></script>
 
+<p>So my macro needed to find all abstract methods in the referenced trait, and provide implementations of them.  For that, I’d need to dive into <a href="http://docs.scala-lang.org/overviews/reflection/overview.html">Scala Reflection</a>, another new features in Scala 2.10.  This post is already pretty long, though, and I felt just learning the basics of macros is a good start, so I’ll save that for another update.  Stay tuned.</p>
 
-<p>So my macro needed to find all abstract methods in the referenced trait, and provide implementations of them.  For that, I&rsquo;d need to dive into <a href="http://docs.scala-lang.org/overviews/reflection/overview.html">Scala Reflection</a>, another new features in Scala 2.10.  This post is already pretty long, though, and I felt just learning the basics of macros is a good start, so I&rsquo;ll save that for another update.  Stay tuned.</p>
+<p>I hope you’ve learned something from my experience – I sure wish I knew some of this at the very beginning.  I’ve left out a lot of details, but I’ve tried to focus on the major breakthroughs I made, the things I didn’t find elsewhere (or at least, I didn’t find right away).  Leave some comments if you found this useful, if you have other tips on learning macros (or if you have any corrections)!</p>
 
-<p>I hope you&rsquo;ve learned something from my experience &ndash; I sure wish I knew some of this at the very beginning.  I&rsquo;ve left out a lot of details, but I&rsquo;ve tried to focus on the major breakthroughs I made, the things I didn&rsquo;t find elsewhere (or at least, I didn&rsquo;t find right away).  Leave some comments if you found this useful, if you have other tips on learning macros (or if you have any corrections)!</p>
-
-<p><strong>UPDATE</strong> I&rsquo;ve just posted <a href="http://imranrashid.com/posts/scala-reflection/">part 2</a>, where I explore scala reflection and get my macro to work for any trait.</p>
+<p><strong>UPDATE</strong> I’ve just posted <a href="http://imranrashid.com/posts/scala-reflection/">part 2</a>, where I explore scala reflection and get my macro to work for any trait.</p>
 
     </div>
 

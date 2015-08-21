@@ -90,7 +90,7 @@
     <div class='right'>
       <a href="https://github.com/squito" id="github"><i class='icon-github'></i></a>
     </div>
-    <ul class="tag-list" id="main-tag-list"><li class="tag"><a href="/tag/jekyll" tag-weight="1" title="Tag - jekyll">jekyll</a></li> <li class="tag"><a href="/tag/latex" tag-weight="1" title="Tag - latex">latex</a></li> <li class="tag"><a href="/tag/ML" tag-weight="2" title="Tag - ML">ML</a></li> <li class="tag"><a href="/tag/recipe" tag-weight="5" title="Tag - recipe">recipe</a></li> <li class="tag"><a href="/tag/book review" tag-weight="2" title="Tag - book review">book review</a></li> <li class="tag"><a href="/tag/Scala" tag-weight="7" title="Tag - Scala">Scala</a></li> <li class="tag"><a href="/tag/Open Source" tag-weight="1" title="Tag - Open Source">Open Source</a></li> <li class="tag"><a href="/tag/Personal" tag-weight="1" title="Tag - Personal">Personal</a></li> <li class="tag"><a href="/tag/Travel" tag-weight="1" title="Tag - Travel">Travel</a></li> <li class="tag"><a href="/tag/Review" tag-weight="1" title="Tag - Review">Review</a></li> <li class="tag"><a href="/tag/tech" tag-weight="1" title="Tag - tech">tech</a></li> <li class="tag"><a href="/tag/profiling" tag-weight="1" title="Tag - profiling">profiling</a></li> <li class="tag"><a href="/tag/nature" tag-weight="1" title="Tag - nature">nature</a></li> <li class="tag"><a href="/tag/mountains" tag-weight="1" title="Tag - mountains">mountains</a></li> <li class="tag"><a href="/tag/Macros" tag-weight="2" title="Tag - Macros">Macros</a></li> <li class="tag"><a href="/tag/Tech" tag-weight="3" title="Tag - Tech">Tech</a></li> <li class="tag"><a href="/tag/R" tag-weight="1" title="Tag - R">R</a></li> </ul> 
+    <ul class="tag-list" id="main-tag-list"><li class="tag"><a href="/tag/jekyll" tag-weight="1" title="Tag - jekyll">jekyll</a></li> <li class="tag"><a href="/tag/latex" tag-weight="1" title="Tag - latex">latex</a></li> <li class="tag"><a href="/tag/ML" tag-weight="2" title="Tag - ML">ML</a></li> <li class="tag"><a href="/tag/recipe" tag-weight="5" title="Tag - recipe">recipe</a></li> <li class="tag"><a href="/tag/book review" tag-weight="2" title="Tag - book review">book review</a></li> <li class="tag"><a href="/tag/Scala" tag-weight="7" title="Tag - Scala">Scala</a></li> <li class="tag"><a href="/tag/Open Source" tag-weight="1" title="Tag - Open Source">Open Source</a></li> <li class="tag"><a href="/tag/Personal" tag-weight="1" title="Tag - Personal">Personal</a></li> <li class="tag"><a href="/tag/Travel" tag-weight="1" title="Tag - Travel">Travel</a></li> <li class="tag"><a href="/tag/Review" tag-weight="1" title="Tag - Review">Review</a></li> <li class="tag"><a href="/tag/tech" tag-weight="1" title="Tag - tech">tech</a></li> <li class="tag"><a href="/tag/profiling" tag-weight="1" title="Tag - profiling">profiling</a></li> <li class="tag"><a href="/tag/nature" tag-weight="1" title="Tag - nature">nature</a></li> <li class="tag"><a href="/tag/mountains" tag-weight="1" title="Tag - mountains">mountains</a></li> <li class="tag"><a href="/tag/Macros" tag-weight="2" title="Tag - Macros">Macros</a></li> <li class="tag"><a href="/tag/Tech" tag-weight="4" title="Tag - Tech">Tech</a></li> <li class="tag"><a href="/tag/R" tag-weight="1" title="Tag - R">R</a></li> <li class="tag"><a href="/tag/Spark" tag-weight="1" title="Tag - Spark">Spark</a></li> </ul> 
   </div>
 </header>
 
@@ -104,32 +104,31 @@
 <div class="content">
   <div id="post">
     <div class="body">
-      <p>I&rsquo;ve started putting more effort into
+      <p>I’ve started putting more effort into
 <a href="https://github.com/squito/sblaj/blob/master/ml/src/main/scala/org/sblaj/ml/lda/OnlineVBLDA.scala">implementing machine learning algorithms in Scala</a>,
 and right away
 I started wondering about the performance of various ways of looping.  I explored this a bit before
 I switched to Scala from Java, and I remember deciding that I could get comparable performance as long
 as I was careful to use primitive arrays.</p>
 
-<p>But now that I&rsquo;ve got a bit more experience using Scala, looping over arrays with a while loop looks
-horribly ugly.  Not to mention, its extremely bug-prone &ndash; I often forget to increment the index. (Why
-doesn&rsquo;t Scala have a proper for loop?)</p>
+<p>But now that I’ve got a bit more experience using Scala, looping over arrays with a while loop looks
+horribly ugly.  Not to mention, its extremely bug-prone – I often forget to increment the index. (Why
+doesn’t Scala have a proper for loop?)</p>
 
 <p>So I wanted to compare the direct while loop to two alternatives:</p>
 
 <ol>
-<li><em>Tail Recursion</em>.  Scala claims this gets compiled down to an iterative loop, so lets see if its true</li>
-<li><em>Foreach over a Range</em>.  This is probably the cleanest approach, but I thought the inline lambda functions
-would get compiled to calling a method on a class, which would have a lot of overhead.</li>
+  <li><em>Tail Recursion</em>.  Scala claims this gets compiled down to an iterative loop, so lets see if its true</li>
+  <li><em>Foreach over a Range</em>.  This is probably the cleanest approach, but I thought the inline lambda functions
+  would get compiled to calling a method on a class, which would have a lot of overhead.</li>
 </ol>
-
 
 <p>All of these experiments are with Scala 2.9.1-1, on a MacbookPro 2.4 GHz Intel Core i7, 8 GB 1333 MHz DDR3.</p>
 
-<h2>My Experiments</h2>
+<h2 id="my-experiments">My Experiments</h2>
 
 <p>The first thing I wanted to profile was a very simple loop over a giant array.  I made a couple of modifications along
-the way, which I&rsquo;ll discuss below, but here&rsquo;s code I ended up with at the end.  (I added the <code>array.foreach</code> towards the
+the way, which I’ll discuss below, but here’s code I ended up with at the end.  (I added the <code>array.foreach</code> towards the
 end of my experiments, so not all my results include it.)</p>
 
 <pre><code>package org.sblaj.ml
@@ -191,7 +190,7 @@ object IterationTiming {
 }
 </code></pre>
 
-<p>First, I tried just pasting the relevant code into the scala REPL, first setting <code>n = 1e6</code>.   Here&rsquo;s what I saw printed out:</p>
+<p>First, I tried just pasting the relevant code into the scala REPL, first setting <code>n = 1e6</code>.   Here’s what I saw printed out:</p>
 
 <pre><code>itr took 36ms
 tail rec took 7ms
@@ -199,7 +198,7 @@ foreach took 573ms
 itr took 46ms
 </code></pre>
 
-<p>As I has suspected, the foreach loop took much longer.  But I couldn&rsquo;t understand why the tail-recursive version would be
+<p>As I has suspected, the foreach loop took much longer.  But I couldn’t understand why the tail-recursive version would be
 <em>faster</em>.  I tried doing a similar experiment from within the sbt console, instead of the scala REPL, and got very similar
 results.  Then I suspected the REPL might be doing something funny, so I put the code into a file and compiled it with sbt.</p>
 
@@ -238,7 +237,7 @@ itr took 399ms
 
 <p>The iterative version was faster, but not by very much.  I was puzzled.</p>
 
-<h2>JIT,javap, and scalac</h2>
+<h2 id="jitjavap-and-scalac">JIT,javap, and scalac</h2>
 
 <p>I thought that maybe the only reason the foreach was able to keep is because the hotspot compiler was able to eliminate
 its overhead and inline that code very quickly.  Indeed, turning off the hotspot compiler <code>-Xint</code> did change the runtime, though not quite
@@ -252,10 +251,10 @@ itr took 1390ms
 </code></pre>
 
 <p>I tried turning on extra info on what the hotspot compiler was doing with <code>-XX:+PrintCompilation</code>, and I was shocked to see
-it wasn&rsquo;t doing anything special w/ the foreach!  After looking with <code>javap</code>, I found out that the lambda is <em>already compiled away</em>.
-The foreach wasn&rsquo;t another function call!  This was a real shock.  But, i also had my doubts, because according to javap, my
+it wasn’t doing anything special w/ the foreach!  After looking with <code>javap</code>, I found out that the lambda is <em>already compiled away</em>.
+The foreach wasn’t another function call!  This was a real shock.  But, i also had my doubts, because according to javap, my
 tail-recursive function was still creating a function call.  If that was really the case, there is no way it would have comparable
-performance.</p>
+performance. </p>
 
 <pre><code>bash-3.2$ javap -classpath ml/target/scala-2.9.1/classes -c org.sblaj.ml.IterationTiming$
 ...
@@ -263,13 +262,13 @@ performance.</p>
 ...
 </code></pre>
 
-<p>I&rsquo;m no expert on javap, but that sure looks like a method call.  And the method its calling doesn&rsquo;t seem to exist.</p>
+<p>I’m no expert on javap, but that sure looks like a method call.  And the method its calling doesn’t seem to exist.</p>
 
 <p>After some more digging, I found the answer for <code>foreach</code>: scalac already <a href="https://github.com/scala/scala/commit/4cfc633fc6">optimizes foreach over Ranges</a>.
 So, all of that worrying for nothing; <code>foreach</code> was a bit slower, but not massively so.  Its probably good enough in a lot of cases.</p>
 
-<p>Just to be really sure I wasn&rsquo;t crazy, I tried another foreach, not on a range (the last <code>array.foreach</code> in my code).  This confirmed my expectations
-&ndash; it was much slower.</p>
+<p>Just to be really sure I wasn’t crazy, I tried another foreach, not on a range (the last <code>array.foreach</code> in my code).  This confirmed my expectations
+– it was much slower.</p>
 
 <pre><code>bash-3.2$ scala -J-Xmx1G -cp ml/target/scala-2.9.1/classes/ org.sblaj.ml.IterationTiming 100000000
 itr took 77ms
@@ -289,25 +288,23 @@ itr took 14ms
 array foreach took 750ms
 </code></pre>
 
-<p>If you&rsquo;re interested in reading more on this topic, you can also check out these posts from other blogs, discussing
+<p>If you’re interested in reading more on this topic, you can also check out these posts from other blogs, discussing
 other aspects of loop optimizations in scala:</p>
 
 <ul>
-<li><a href="http://ochafik.com/blog/?p=806">Scalaxy/Loops: Optimized foreach loops for Scala 2.10.0 have landed</a></li>
-<li><a href="http://dynamicsofprogramming.blogspot.co.uk/2013/01/loop-performance-and-local-variables-in.html">Loop Performance and Local Variables in Scala</a></li>
+  <li><a href="http://ochafik.com/blog/?p=806">Scalaxy/Loops: Optimized foreach loops for Scala 2.10.0 have landed</a></li>
+  <li><a href="http://dynamicsofprogramming.blogspot.co.uk/2013/01/loop-performance-and-local-variables-in.html">Loop Performance and Local Variables in Scala</a></li>
 </ul>
 
-
-<h1>Summary</h1>
+<h1 id="summary">Summary</h1>
 
 <ul>
-<li>Never use the REPL for timing experiments!  Its extremely misleading, not representative of the way you&rsquo;ll really use your code.  Its ok
+  <li>Never use the REPL for timing experiments!  Its extremely misleading, not representative of the way you’ll really use your code.  Its ok
 to invoke code from within the REPL when timing, but be sure the code is defined in a file that is compiled normally.</li>
-<li><code>Range.foreach</code> is optimized.  Yay! You can still get a bit faster w/ while loops, but the difference is not
-monumental.  (Don&rsquo;t be fooled into thinking this means <em>all</em> foreachs are fast &ndash; they&rsquo;re not.)</li>
-<li>The bytecode of tail-recursive calls is still mysterious &hellip; maybe more on that in the future.</li>
+  <li><code>Range.foreach</code> is optimized.  Yay! You can still get a bit faster w/ while loops, but the difference is not
+monumental.  (Don’t be fooled into thinking this means <em>all</em> foreachs are fast – they’re not.)</li>
+  <li>The bytecode of tail-recursive calls is still mysterious … maybe more on that in the future.</li>
 </ul>
-
 
     </div>
 

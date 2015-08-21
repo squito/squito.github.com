@@ -90,7 +90,7 @@
     <div class='right'>
       <a href="https://github.com/squito" id="github"><i class='icon-github'></i></a>
     </div>
-    <ul class="tag-list" id="main-tag-list"><li class="tag"><a href="/tag/jekyll" tag-weight="1" title="Tag - jekyll">jekyll</a></li> <li class="tag"><a href="/tag/latex" tag-weight="1" title="Tag - latex">latex</a></li> <li class="tag"><a href="/tag/ML" tag-weight="2" title="Tag - ML">ML</a></li> <li class="tag"><a href="/tag/recipe" tag-weight="5" title="Tag - recipe">recipe</a></li> <li class="tag"><a href="/tag/book review" tag-weight="2" title="Tag - book review">book review</a></li> <li class="tag"><a href="/tag/Scala" tag-weight="7" title="Tag - Scala">Scala</a></li> <li class="tag"><a href="/tag/Open Source" tag-weight="1" title="Tag - Open Source">Open Source</a></li> <li class="tag"><a href="/tag/Personal" tag-weight="1" title="Tag - Personal">Personal</a></li> <li class="tag"><a href="/tag/Travel" tag-weight="1" title="Tag - Travel">Travel</a></li> <li class="tag"><a href="/tag/Review" tag-weight="1" title="Tag - Review">Review</a></li> <li class="tag"><a href="/tag/tech" tag-weight="1" title="Tag - tech">tech</a></li> <li class="tag"><a href="/tag/profiling" tag-weight="1" title="Tag - profiling">profiling</a></li> <li class="tag"><a href="/tag/nature" tag-weight="1" title="Tag - nature">nature</a></li> <li class="tag"><a href="/tag/mountains" tag-weight="1" title="Tag - mountains">mountains</a></li> <li class="tag"><a href="/tag/Macros" tag-weight="2" title="Tag - Macros">Macros</a></li> <li class="tag"><a href="/tag/Tech" tag-weight="3" title="Tag - Tech">Tech</a></li> <li class="tag"><a href="/tag/R" tag-weight="1" title="Tag - R">R</a></li> </ul> 
+    <ul class="tag-list" id="main-tag-list"><li class="tag"><a href="/tag/jekyll" tag-weight="1" title="Tag - jekyll">jekyll</a></li> <li class="tag"><a href="/tag/latex" tag-weight="1" title="Tag - latex">latex</a></li> <li class="tag"><a href="/tag/ML" tag-weight="2" title="Tag - ML">ML</a></li> <li class="tag"><a href="/tag/recipe" tag-weight="5" title="Tag - recipe">recipe</a></li> <li class="tag"><a href="/tag/book review" tag-weight="2" title="Tag - book review">book review</a></li> <li class="tag"><a href="/tag/Scala" tag-weight="7" title="Tag - Scala">Scala</a></li> <li class="tag"><a href="/tag/Open Source" tag-weight="1" title="Tag - Open Source">Open Source</a></li> <li class="tag"><a href="/tag/Personal" tag-weight="1" title="Tag - Personal">Personal</a></li> <li class="tag"><a href="/tag/Travel" tag-weight="1" title="Tag - Travel">Travel</a></li> <li class="tag"><a href="/tag/Review" tag-weight="1" title="Tag - Review">Review</a></li> <li class="tag"><a href="/tag/tech" tag-weight="1" title="Tag - tech">tech</a></li> <li class="tag"><a href="/tag/profiling" tag-weight="1" title="Tag - profiling">profiling</a></li> <li class="tag"><a href="/tag/nature" tag-weight="1" title="Tag - nature">nature</a></li> <li class="tag"><a href="/tag/mountains" tag-weight="1" title="Tag - mountains">mountains</a></li> <li class="tag"><a href="/tag/Macros" tag-weight="2" title="Tag - Macros">Macros</a></li> <li class="tag"><a href="/tag/Tech" tag-weight="4" title="Tag - Tech">Tech</a></li> <li class="tag"><a href="/tag/R" tag-weight="1" title="Tag - R">R</a></li> <li class="tag"><a href="/tag/Spark" tag-weight="1" title="Tag - Spark">Spark</a></li> </ul> 
   </div>
 </header>
 
@@ -104,11 +104,11 @@
 <div class="content">
   <div id="post">
     <div class="body">
-      <p>I&rsquo;m primarily a Java / Scala developer, but every so often I dabble in R, whether its to do a little
+      <p>I’m primarily a Java / Scala developer, but every so often I dabble in R, whether its to do a little
 data analysis, train statistical models, or plot some graphs.  Probably 95% of my R code is in throw-away
-scripts, that are undocumented and aren&rsquo;t meant to be shared or ever looked at again.  But every
-so often, I write a utility function in R that I&rsquo;d like to reuse, and even share with others.  I&rsquo;ve
-found that R&rsquo;s &ldquo;standard&rdquo; methods for sharing &amp; reusing code aren&rsquo;t quite enough, but I think I&rsquo;ve
+scripts, that are undocumented and aren’t meant to be shared or ever looked at again.  But every
+so often, I write a utility function in R that I’d like to reuse, and even share with others.  I’ve
+found that R’s “standard” methods for sharing &amp; reusing code aren’t quite enough, but I think I’ve
 come up with a scheme that works pretty well.</p>
 
 <p><strong>TL;DR</strong> <em>Follow the instructions in <a href="https://gist.github.com/squito/c1a094b1aee0fe6e84cf">this
@@ -118,23 +118,23 @@ gist</a></em>.</p>
 Packages are fantastic ways to share polished tools with a wide
 audience.  In fact, one of the major benefits of R is all the great packages that have been
 written by others and shared publicly on <a href="http://cran.r-project.org/">CRAN</a>.  But they are <strong>much</strong>
-too heavy-weight for some simple utility functions; I don&rsquo;t want to
-go through all the work of creating a package when I write a little util which stores our
+too heavy-weight for some simple utility functions; I don’t want to
+go through all the work of creating a package when I write a little util which stores our 
 database configuration.</p>
 
 <p><em>Update</em>: If you <strong>do</strong> want to write a package, I highly recommend
-the <a href="http://cran.r-project.org/web/packages/devtools/index.html"><code>devtools</code></a> package and
-<a href="http://r-pkgs.had.co.nz/">Hadley Wickham&rsquo;s book on writing packages</a> (in
+the <a href="http://cran.r-project.org/web/packages/devtools/index.html"><code>devtools</code></a> package and 
+<a href="http://r-pkgs.had.co.nz/">Hadley Wickham’s book on writing packages</a> (in
 progress, but lots of good content already available online).</p>
 
 <p>The other way to re-use your utility functions is to stick them in a plain <code>.R</code> file, and then
 <code>source()</code> that file whenever you want to use it.  This is perfect when you are working by yourself,
-and just on your on laptop.  But it doesn&rsquo;t work that well when you need to share your
+and just on your on laptop.  But it doesn’t work that well when you need to share your
 work with others in scripts that can be run repeatably, because of the way <code>source()</code> searches
 for the file.</p>
 
 <p>I could reference my file with an absolute path, eg. <code>source("/Users/imran/myRutils/dbUtils.R")</code>.
-Obviously, that would break if I send someone else all my <code>.R</code> files, because they&rsquo;ll put everything
+Obviously, that would break if I send someone else all my <code>.R</code> files, because they’ll put everything
 in a different directory.  I could just use relative paths: if my scripts lives in
 <code>"/Users/imran/coolNewProject/analyzeData.R"</code>, then I could load my utils with
 <code>source("../../myRUtils/dbUtils.R")</code>.</p>
@@ -142,51 +142,54 @@ in a different directory.  I could just use relative paths: if my scripts lives 
 <p>This gets us further, but it has some problems as the code gets used more:</p>
 
 <ol>
-<li><p>All team members have to use the exact same directory structure.  Since we&rsquo;re using relative
+  <li>
+    <p>All team members have to use the exact same directory structure.  Since we’re using relative
 paths, everybody has to put their utility functions in the same place relative to their scripts.
-This doesn&rsquo;t sound too bad, but as the number of scripts proliferate this can be become a pain.</p></li>
-<li><p>Its hard to have utilities &ldquo;stand alone&rdquo;, eg. in their own git repo, or even to have multiple git
+This doesn’t sound too bad, but as the number of scripts proliferate this can be become a pain.</p>
+  </li>
+  <li>
+    <p>Its hard to have utilities “stand alone”, eg. in their own git repo, or even to have multiple git
 repos of utilities from many different sources, as they all need to be put in exactly the right
-location to work correctly.</p></li>
-<li><p>Its hard for utilities to reference each other, while still allowing there to be some
-independence between them.</p></li>
+location to work correctly.</p>
+  </li>
+  <li>
+    <p>Its hard for utilities to reference each other, while still allowing there to be some
+independence between them.</p>
+  </li>
 </ol>
-
 
 <p>All of these reasons are really just different takes on the same issue: we want looser coupling
 between our scripts and our utility functions, and more flexibility on where we put our utility
 functions.  In the Java world, the Java runtime has a somewhat
 similar problem of figuring out where to look for all the compiled code.  You could just dump it all
-in one directory &ndash; but this can make it a pain to have shared components used by multiple different
-programs.  Java solves this with a <strong>classpath</strong> &ndash; a list of places to search for code.  For lack
-of a better term, I propose creating a &ldquo;classpath&rdquo; for R as well.</p>
+in one directory – but this can make it a pain to have shared components used by multiple different
+programs.  Java solves this with a <strong>classpath</strong> – a list of places to search for code.  For lack
+of a better term, I propose creating a “classpath” for R as well.</p>
 
 <p>If instead of using <code>source()</code>, we use the <code>mylib()</code> function I have defined below, we can get R to
 search for our utilities in a handful of predefined locations.  This way, we can keep our utilities
-in a completely separate location from the one-off scripts &ndash; in fact, the utilities can even be in
+in a completely separate location from the one-off scripts – in fact, the utilities can even be in
 a separate repo, checked out to a different location.  This can make it a lot easier for a team to
 keep a set of shared utilities, which they all use, maintain, and contribute to, while they are free
 to put their hacky scripts wherever they like.</p>
 
-<p>Here&rsquo;s how we define <code>mylib()</code>:</p>
+<p>Here’s how we define <code>mylib()</code>:</p>
 
 <script src="https://gist.github.com/squito/c1a094b1aee0fe6e84cf.js?file=mylib.R"></script>
 
-
-<p>There is just one missing piece: how do we ensure this file gets loaded all the time?  We don&rsquo;t want
+<p>There is just one missing piece: how do we ensure this file gets loaded all the time?  We don’t want
 to have to paste these function definitions at the top of every file, or in the beginning of every R
 session; we would be no better off than we were in the beginning.</p>
 
-<p>We can solve this problem by using <code>~/.Rprofile</code>, a file which contains ordinary R code that
+<p>We can solve this problem by using <code>~/.Rprofile</code>, a file which contains ordinary R code that 
 is automatically loaded every time R starts up.  We can either paste the definitions from above into
 <code>~/.Rprofile</code>, or we can put those definitions in another file, and just have <code>~/.Rprofile</code> source
-that file.  (Yes, in this one case, we&rsquo;ll need to use <code>source()</code> and manually
+that file.  (Yes, in this one case, we’ll need to use <code>source()</code> and manually
 ensure the paths are correct.)</p>
 
 <p>After we do this small amount of setup, it becomes easy to use the <code>mylib()</code> function:</p>
 
 <script src="https://gist.github.com/squito/c1a094b1aee0fe6e84cf.js?file=usage.R"></script>
-
 
 <p>One final note for mac users: if you want to use environment variables when defining your
 <code>source.dirs</code>, its a little tricky to make sure those environment variables are defined for gui
@@ -196,27 +199,27 @@ a line like <code>setenv &lt;VAR_NAME&gt; &lt;VAR_VALUE&gt;</code>,
 then execute
 <code>launchctl &lt; ~/.launchd.conf</code></p>
 
-<p>Now that we&rsquo;ve got our utility functions nicely separated, so they are easier to reuse and maintain,
-the next step would be set some unit tests for them.  <del>But, that will have to wait for a future blog
-post :)</del> Hadley Wickham&rsquo;s book on R packages also has a good <a href="http://r-pkgs.had.co.nz/tests.html">section on unit
+<p>Now that we’ve got our utility functions nicely separated, so they are easier to reuse and maintain,
+the next step would be set some unit tests for them.  ~~But, that will have to wait for a future blog
+post :)~~ Hadley Wickham’s book on R packages also has a good <a href="http://r-pkgs.had.co.nz/tests.html">section on unit
 testing</a>.</p>
 
-<p>I hope this was helpful &ndash; honestly this is a system I came up because there didn&rsquo;t seem to be a
-better way.  I&rsquo;m
-curious if bigger teams of R users have developed other ways of dealing with this problem, I&rsquo;d love
+<p>I hope this was helpful – honestly this is a system I came up because there didn’t seem to be a
+better way.  I’m
+curious if bigger teams of R users have developed other ways of dealing with this problem, I’d love
 to hear about it in the comments.</p>
 
 <p><em>Update</em>: Hadley Wickham <a href="https://twitter.com/hadleywickham/status/528184886050320385?cn=cmVwbHk%3D">commented on
 twitter</a> that I should
 just bite the bullet and write packages.  After that post, I took a closer look at the
 <a href="http://cran.r-project.org/web/packages/devtools/index.html"><code>devtools</code></a> package, and his <a href="http://r-pkgs.had.co.nz/">upcoming
-book</a>.  They definitely make the process of writing and using your own
+book</a>.  They definitely make the process of writing and using your own 
 packages <em>much</em> easier.</p>
 
 <p>Its still a lot more complicated than just sticking your
-functions in a file, though.  By all
+functions in a file, though.  By all 
 means, if you are motivated to write a package, <em>do that
-instead</em>.  But I imagine there are many organizations where that simply won&rsquo;t happen because of the
+instead</em>.  But I imagine there are many organizations where that simply won’t happen because of the
 overhead involved.  Hopefully this is a happy-compromise in those situations.</p>
 
     </div>

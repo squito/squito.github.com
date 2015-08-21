@@ -90,7 +90,7 @@
     <div class='right'>
       <a href="https://github.com/squito" id="github"><i class='icon-github'></i></a>
     </div>
-    <ul class="tag-list" id="main-tag-list"><li class="tag"><a href="/tag/jekyll" tag-weight="1" title="Tag - jekyll">jekyll</a></li> <li class="tag"><a href="/tag/latex" tag-weight="1" title="Tag - latex">latex</a></li> <li class="tag"><a href="/tag/ML" tag-weight="2" title="Tag - ML">ML</a></li> <li class="tag"><a href="/tag/recipe" tag-weight="5" title="Tag - recipe">recipe</a></li> <li class="tag"><a href="/tag/book review" tag-weight="2" title="Tag - book review">book review</a></li> <li class="tag"><a href="/tag/Scala" tag-weight="7" title="Tag - Scala">Scala</a></li> <li class="tag"><a href="/tag/Open Source" tag-weight="1" title="Tag - Open Source">Open Source</a></li> <li class="tag"><a href="/tag/Personal" tag-weight="1" title="Tag - Personal">Personal</a></li> <li class="tag"><a href="/tag/Travel" tag-weight="1" title="Tag - Travel">Travel</a></li> <li class="tag"><a href="/tag/Review" tag-weight="1" title="Tag - Review">Review</a></li> <li class="tag"><a href="/tag/tech" tag-weight="1" title="Tag - tech">tech</a></li> <li class="tag"><a href="/tag/profiling" tag-weight="1" title="Tag - profiling">profiling</a></li> <li class="tag"><a href="/tag/nature" tag-weight="1" title="Tag - nature">nature</a></li> <li class="tag"><a href="/tag/mountains" tag-weight="1" title="Tag - mountains">mountains</a></li> <li class="tag"><a href="/tag/Macros" tag-weight="2" title="Tag - Macros">Macros</a></li> <li class="tag"><a href="/tag/Tech" tag-weight="3" title="Tag - Tech">Tech</a></li> <li class="tag"><a href="/tag/R" tag-weight="1" title="Tag - R">R</a></li> </ul> 
+    <ul class="tag-list" id="main-tag-list"><li class="tag"><a href="/tag/jekyll" tag-weight="1" title="Tag - jekyll">jekyll</a></li> <li class="tag"><a href="/tag/latex" tag-weight="1" title="Tag - latex">latex</a></li> <li class="tag"><a href="/tag/ML" tag-weight="2" title="Tag - ML">ML</a></li> <li class="tag"><a href="/tag/recipe" tag-weight="5" title="Tag - recipe">recipe</a></li> <li class="tag"><a href="/tag/book review" tag-weight="2" title="Tag - book review">book review</a></li> <li class="tag"><a href="/tag/Scala" tag-weight="7" title="Tag - Scala">Scala</a></li> <li class="tag"><a href="/tag/Open Source" tag-weight="1" title="Tag - Open Source">Open Source</a></li> <li class="tag"><a href="/tag/Personal" tag-weight="1" title="Tag - Personal">Personal</a></li> <li class="tag"><a href="/tag/Travel" tag-weight="1" title="Tag - Travel">Travel</a></li> <li class="tag"><a href="/tag/Review" tag-weight="1" title="Tag - Review">Review</a></li> <li class="tag"><a href="/tag/tech" tag-weight="1" title="Tag - tech">tech</a></li> <li class="tag"><a href="/tag/profiling" tag-weight="1" title="Tag - profiling">profiling</a></li> <li class="tag"><a href="/tag/nature" tag-weight="1" title="Tag - nature">nature</a></li> <li class="tag"><a href="/tag/mountains" tag-weight="1" title="Tag - mountains">mountains</a></li> <li class="tag"><a href="/tag/Macros" tag-weight="2" title="Tag - Macros">Macros</a></li> <li class="tag"><a href="/tag/Tech" tag-weight="4" title="Tag - Tech">Tech</a></li> <li class="tag"><a href="/tag/R" tag-weight="1" title="Tag - R">R</a></li> <li class="tag"><a href="/tag/Spark" tag-weight="1" title="Tag - Spark">Spark</a></li> </ul> 
   </div>
 </header>
 
@@ -111,76 +111,67 @@ and automatically generate a class that would read those fields from a <code>Byt
 
 <script src="https://gist.github.com/squito/7094987.js?file=trait.scala"></script>
 
-
 <p>My macro should generate the equivalent of:</p>
 
 <script src="https://gist.github.com/squito/7094987.js?file=goalClass.scala"></script>
 
-
-<p>In the previous post, I was only able to add the methods for one fixed trait &ndash; not very useful.
+<p>In the previous post, I was only able to add the methods for one fixed trait – not very useful.
 If I was
-going to be able to fill in the implementation for any trait, I&rsquo;d need to use scala reflection to figure out which methods I needed
+going to be able to fill in the implementation for any trait, I’d need to use scala reflection to figure out which methods I needed
 to add.
-In this post, we&rsquo;ll learn scala reflection and then generalize our macro to work on any trait.</p>
+In this post, we’ll learn scala reflection and then generalize our macro to work on any trait.</p>
 
-<p>Once again, I&rsquo;d like to warn the reader that is not so much a tutorial, as a journal of my path to discovery, with some mistakes
+<p>Once again, I’d like to warn the reader that is not so much a tutorial, as a journal of my path to discovery, with some mistakes
 and detours along the way.</p>
 
-<h2>Reflection Basics</h2>
+<h2 id="reflection-basics">Reflection Basics</h2>
 
-<p>I started out by learning the basics of <a href="http://docs.scala-lang.org/overviews/reflection/overview.html">scala reflection</a>.  It&rsquo;s pretty easy to play
+<p>I started out by learning the basics of <a href="http://docs.scala-lang.org/overviews/reflection/overview.html">scala reflection</a>.  It’s pretty easy to play
 around with reflection in the repl.
-Let&rsquo;s start with our same set of imports from <a href="http://imranrashid.com/posts/learning-scala-macros/">last time</a>:</p>
+Let’s start with our same set of imports from <a href="http://imranrashid.com/posts/learning-scala-macros/">last time</a>:</p>
 
 <script src="https://gist.github.com/squito/7094987.js?file=replImports.scala"></script>
 
-
 <p>The first step when using reflection is getting a handle on the <code>Type</code> of something, using the <code>typeOf</code> method from our universe.  Once we have a type, we can ask for lots
-of information, like all methods and variables.  (If you&rsquo;re familiar with reflection in Java, this should all be similar in spirit.)</p>
+of information, like all methods and variables.  (If you’re familiar with reflection in Java, this should all be similar in spirit.)</p>
 
 <script src="https://gist.github.com/squito/7847796.js?file=simple_reflection_repl.scala"></script>
 
-
-<p>Note that the <code>MemberScope</code> returned by <code>typ.members</code> is a <code>Traversable</code>, so I can call <code>map</code>, <code>filter</code>, etc.  Here I&rsquo;ve filtered down to just the methods, and
-also &ldquo;cast&rdquo; them to methods with <code>asMethod</code>.</p>
+<p>Note that the <code>MemberScope</code> returned by <code>typ.members</code> is a <code>Traversable</code>, so I can call <code>map</code>, <code>filter</code>, etc.  Here I’ve filtered down to just the methods, and
+also “cast” them to methods with <code>asMethod</code>.</p>
 
 <p>I only needed to do some small filtering on top of this.  I wanted to filter down to only those methods that (1) take no arguments, (2) return either an <code>Int</code> or a
 <code>Float</code>, and (3) that are undefined.  I was able to write some fairly straight-forward utility methods to handle the first two:</p>
 
 <script src="https://gist.github.com/squito/7847796.js?file=reflection_method_filters.scala"></script>
 
-
 <p>I could use these on the type of my example trait, and filter out most of the methods I should ignore:</p>
 
 <script src="https://gist.github.com/squito/7847796.js?file=repl_method_filter_1.scala"></script>
 
+<p>I only had one problem left.  I wanted my macro to only supply an implementation for <em>undefined</em> methods. My example trait supplied an implementation for <code>y</code>, but I hadn’t filtered it out yet.</p>
 
-<p>I only had one problem left.  I wanted my macro to only supply an implementation for <em>undefined</em> methods. My example trait supplied an implementation for <code>y</code>, but I hadn&rsquo;t filtered it out yet.</p>
-
-<h4>Detour: Using Reflection on Methods</h4>
+<h4 id="detour-using-reflection-on-methods">Detour: Using Reflection on Methods</h4>
 
 <p>There is actually a very simple solution to finding defined and undefined methods.  But first, I got the crazy idea of <em>using reflection to discover
-how to use reflection</em>.  This is section is totally unnecessary for my end goal, but hopefully you&rsquo;ll find it interesting nonetheless.</p>
+how to use reflection</em>.  This is section is totally unnecessary for my end goal, but hopefully you’ll find it interesting nonetheless.</p>
 
 <p>I needed to find some way to differentiate method <code>x</code> from method <code>y</code>.  My first instinct was to just look at what was available to me with tab-completion,
 hoping something would look like <code>isDefined</code> or <code>isAbstract</code>.</p>
 
 <script src="https://gist.github.com/squito/7847796.js?file=method_repl_explore.scala"></script>
 
-
-<p>Hmm, scanning the list, i didn&rsquo;t see anything that jumped out at me.  The list of methods was too long to go through them all by hand.
-But then I realized &ndash; I could use reflection to call of those methods on both <code>x</code> and <code>y</code>, and see which ones yielded different results.  That is,
-I&rsquo;d be getting <code>MethodSymbol</code>s that were members of <code>MethodSymbol</code>.   (Yes, there was probably an easier way, but now this just sounded fun.)</p>
+<p>Hmm, scanning the list, i didn’t see anything that jumped out at me.  The list of methods was too long to go through them all by hand.
+But then I realized – I could use reflection to call of those methods on both <code>x</code> and <code>y</code>, and see which ones yielded different results.  That is,
+I’d be getting <code>MethodSymbol</code>s that were members of <code>MethodSymbol</code>.   (Yes, there was probably an easier way, but now this just sounded fun.)  </p>
 
 <p>To call methods using reflection, you first need to get a runtime mirror, from that get an instance mirror, and then finally from there you can call the methods:</p>
 
 <script src="https://gist.github.com/squito/7847796.js?file=diff_method_methods.scala"></script>
 
-
 <p>Now I could run this on <code>x</code> and <code>y</code> to figure out how to find an abstract method:</p>
 
 <script src="https://gist.github.com/squito/7847796.js?file=diff_methods_result.scala"></script>
-
 
 <p>That was a little disappointing.  The only differences were from the name or the method type.  I was expecting a method that returned <code>true</code> for <code>x</code> and <code>false</code> for <code>y</code> (or vice versa).  What gives?</p>
 
@@ -188,64 +179,60 @@ I&rsquo;d be getting <code>MethodSymbol</code>s that were members of <code>Metho
 
 <script src="https://gist.github.com/squito/7847796.js?file=is_method_defined.scala"></script>
 
-
 <p>Nonetheless, that was a fun little experiment in using reflection. (I warned you it was a detour!)</p>
 
-<h2>Runtime and Compile Time Universes</h2>
+<h2 id="runtime-and-compile-time-universes">Runtime and Compile Time Universes</h2>
 
-<p>So far I&rsquo;ve been using runtime reflection as an easy way to learn.  But to use in my macros, I&rsquo;d need to switch to compile time reflection.  For the most part, reflection is the same, but you use a different <code>Universe</code> in compile time reflection.  Since all of the types are dependent on the universe, this also means all the types of my methods change.</p>
+<p>So far I’ve been using runtime reflection as an easy way to learn.  But to use in my macros, I’d need to switch to compile time reflection.  For the most part, reflection is the same, but you use a different <code>Universe</code> in compile time reflection.  Since all of the types are dependent on the universe, this also means all the types of my methods change.</p>
 
 <p>I really wanted to have common methods which worked for both runtime &amp; compile time reflection, and which I could unit test.  To support both, I put all of <a href="https://github.com/squito/learn_macros/blob/master/macros/src/main/scala/com/imranrashid/oleander/macros/BasicReflection.scala">my methods into a helper class</a> which takes a <code>scala.reflect.api.Universe</code> (the parent to runtime &amp; compile time universes).  Then I can instantiate it with either <code>scala.reflect.runtime.universe</code> or <code>context.universe</code> in a macro.</p>
 
 <p>The full code is checked into my learn_macros project, even with some <a href="https://github.com/squito/learn_macros/blob/master/macrotests/src/test/scala/com/imranrashid/oleander/macros/BasicReflectionTest.scala">simple unit tests</a>.</p>
 
-<h2>Parameterizing Annotations</h2>
+<h2 id="parameterizing-annotations">Parameterizing Annotations</h2>
 
-<p>I&rsquo;ve got the basics of reflection &ndash; now I just needed to get a handle on the <code>Type</code> of my target trait inside my macro annotation.  This one was surprisingly difficult to figure out, I had to turn to stackoverflow and got the <a href="http://stackoverflow.com/questions/19791686/type-parameters-on-scala-macro-annotations">answer from Eugene Burmako</a>.</p>
+<p>I’ve got the basics of reflection – now I just needed to get a handle on the <code>Type</code> of my target trait inside my macro annotation.  This one was surprisingly difficult to figure out, I had to turn to stackoverflow and got the <a href="http://stackoverflow.com/questions/19791686/type-parameters-on-scala-macro-annotations">answer from Eugene Burmako</a>.</p>
 
 <p>When using my macro annotation, I make the target trait a type parameter on the annotation class, and then pull it out of the type with a call to <code>typeCheck</code>:</p>
 
 <script src="https://gist.github.com/squito/7847796.js?file=annotation_type_parameters.scala"></script>
 
-
 <p>Then the annotation can be used like so:</p>
 
 <script src="https://gist.github.com/squito/7847796.js?file=using_annotation_type_parameters.scala"></script>
 
-
 <p>Again, I put together some <a href="https://github.com/squito/learn_macros/blob/master/macrotests/src/test/scala/com/imranrashid/oleander/macros/MacrosWithReflectionTest.scala">unit tests to verify the behavior</a>.</p>
 
-<h2>Putting It All Together</h2>
+<h2 id="putting-it-all-together">Putting It All Together</h2>
 
-<p>We&rsquo;ve got all the key pieces now.  We know how to:</p>
+<p>We’ve got all the key pieces now.  We know how to:</p>
 
 <ol>
-<li>Template our macro annotation with the type of trait it should add.</li>
-<li>Use reflection inside our macro to find all the getters it needs to define.</li>
-<li>Add methods to the existing class defintion (from <a href="http://imranrashid.com/posts/learning-scala-macros/">part 1</a>).</li>
+  <li>Template our macro annotation with the type of trait it should add.</li>
+  <li>Use reflection inside our macro to find all the getters it needs to define.</li>
+  <li>Add methods to the existing class defintion (from <a href="http://imranrashid.com/posts/learning-scala-macros/">part 1</a>).</li>
 </ol>
 
-
-<p>Since what&rsquo;s left is mostly normal scala coding, I won&rsquo;t go through it in
+<p>Since what’s left is mostly normal scala coding, I won’t go through it in
 detail here.  But you can take a look at the <a href="https://github.com/squito/learn_macros/blob/master/macros/src/main/scala/com/imranrashid/oleander/macros/ByteBufferBacked.scala">full implementations</a>.  There are two versions of my annotation, <code>@ByteBufferBacked</code> with just getters, and <code>@MutableByteBufferBacked</code> which also adds in setters, which can be used like so:</p>
 
 <script src="https://gist.github.com/squito/7847796.js?file=final_api_example.scala"></script>
 
-
 <p>You can also take a look at the <a href="https://github.com/squito/learn_macros/blob/master/macrotests/src/test/scala/com/imranrashid/oleander/macros/ByteBufferBackedTest.scala">unit tests</a> or just check out the full project and run the tests yourself.</p>
 
-<h2>Conclusion</h2>
+<h2 id="conclusion">Conclusion</h2>
 
-<p>In these two blog posts, we&rsquo;ve learned how to use scala macro annotations to automatically expand a class definition so that it implements a trait.  Along the way we&rsquo;ve learned the basics of working with ASTs, how to simplify our lives with quasiquotes, and how to use reflection to explore types.  Our macro isn&rsquo;t the most robust yet &ndash; it could use a lot more error handling &ndash; but we&rsquo;ve got a taste for how everything works.</p>
+<p>In these two blog posts, we’ve learned how to use scala macro annotations to automatically expand a class definition so that it implements a trait.  Along the way we’ve learned the basics of working with ASTs, how to simplify our lives with quasiquotes, and how to use reflection to explore types.  Our macro isn’t the most robust yet – it could use a lot more error handling – but we’ve got a taste for how everything works.</p>
 
-<p>I won&rsquo;t promise more in this series, but there are few more ideas I&rsquo;d like to explore.  First, Eugene Burmako suggested that I could achieve the functionality I want in my library using normal macros, instead of macro annotations.  While it would change the user api somewhat, this is particularly appealing because
-macro annotations won&rsquo;t make it into scala until 2.12 at the earliest.</p>
+<p>I won’t promise more in this series, but there are few more ideas I’d like to explore.  First, Eugene Burmako suggested that I could achieve the functionality I want in my library using normal macros, instead of macro annotations.  While it would change the user api somewhat, this is particularly appealing because
+macro annotations won’t make it into scala until 2.12 at the earliest.</p>
 
-<p>Second, now that I&rsquo;ve got a proof of concept, I&rsquo;d really like to explore the idea of having classes store their data in <code>ByteBuffer</code>s.  Probably most readers are only interested in the discussion of using macros and reflection, but aren&rsquo;t sure what the point of my macro is.  I hope that by expanding these ideas somewhat, I can make it easy to store general purpose data structures directly in byte buffers.  That can have all sorts of potential benefits: save memory, avoid serialization, store data off-heap, and lead to more cache-aware data structures (particularly important for numerical computing).  And by using macros, we can still keep a clean user api.  But, it&rsquo;s still just an idea, I need to prove those claims.</p>
+<p>Second, now that I’ve got a proof of concept, I’d really like to explore the idea of having classes store their data in <code>ByteBuffer</code>s.  Probably most readers are only interested in the discussion of using macros and reflection, but aren’t sure what the point of my macro is.  I hope that by expanding these ideas somewhat, I can make it easy to store general purpose data structures directly in byte buffers.  That can have all sorts of potential benefits: save memory, avoid serialization, store data off-heap, and lead to more cache-aware data structures (particularly important for numerical computing).  And by using macros, we can still keep a clean user api.  But, it’s still just an idea, I need to prove those claims.</p>
 
-<p>I hope you&rsquo;ve found this helpful in your exploration of macros.  Please let me know if you found this useful, if parts are unclear, or if you found any errors.</p>
+<p>I hope you’ve found this helpful in your exploration of macros.  Please let me know if you found this useful, if parts are unclear, or if you found any errors.</p>
 
 <p><em>Thanks to all my coworkers at <a href="http://quantifind.com">Quantifind</a> for all their help proofreading this!</em></p>
+
 
     </div>
 
