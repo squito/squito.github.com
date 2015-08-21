@@ -171,9 +171,11 @@ example.  But if you try to rely on them, they might be incorrect in unexpected 
 Say you deploy a Spark app for a regular batch ETL pipeline, that runs a few times a day as you ingest data.  Maybe you process logs from customer
 purchases, and you track total spend with a counter.  You may even have some alerting if spend levels are too high or too low.  You've unit-tested
 this logic, and even come to rely on it for escalations.  But if one node in your cluster happens to go down, Spark may happily report the job
-completes successfully, though your counter could be off an arbitrary amount.  So you get an alert at 2 AM that spend was too high, when it was
+completes successfully, though your counter could be off an arbitrary amount.[^no-fault-tolerance]  So you get an alert at 2 AM that spend was too high, when it was
 really just fine.  Or even worse, you fail to get an alert when spend is too low, don't notice for far too long.  By the time you figure this
 out, you are already in hot water.
+
+[^no-fault-tolerance]: Though you'd be ill-advised to rely on Spark for fault-tolerance in any case, given [SPARK-5259](https://issues.apache.org/jira/browse/SPARK-5259), [SPARK-5945](https://issues.apache.org/jira/browse/SPARK-5945), [SPARK-8029](https://issues.apache.org/jira/browse/SPARK-8029), and [SPARK-8103](https://issues.apache.org/jira/browse/SPARK-8103).
 
 Or maybe you are just doing ad-hoc data exploration, and throw in a counter for some basic data validation.  Initially the check works just fine,
 correctly reporting errors as you try it out on a handful of different data sets.  In fact, it even helps you discover that one of your datasets
@@ -199,7 +201,8 @@ What Should Spark Have?
 We're unable to fix these problems with accumulators directly due to backwards compatibility (at least in Spark 1.x).  As strange (and useless) as
 these semantics are for accumulators, that behavior can't be changed.  For example, if you are using accumulators to profile your code by tracking
 time spent in various parts of your code (our original use case #3), then it may be useful to count the time spent when recomputing an RDD that
-isn't cached.  Furthermore, other fixes requires changes to the api that just aren't compatible.  For example, the current muddling together of
+isn't cached.  This is fundamentally at odds with a metric that only depends on the input data, for use cases #1 and #4.  Furthermore, solving some 
+of these problems require changes to the api that just aren't compatible.  For example, the current muddling together of
 simple counters with a more complex system for arbitrary computation on the data is one source of the problem.
 
 I believe the first step is to provide a new api which aims to just provide good counters, and nothing more.  Here's an eample of what it might look like:
