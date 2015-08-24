@@ -193,7 +193,7 @@ replacement for MapReduce counters[^exception-in-transformation].  If
 you do try to use accumulators outside of RDD actions, they are worse than useless -- they are actively misleading. [^and-speculation]
 
 [^exception-in-transformation]: If Spark really wanted to discourage improper use of accumulators, it could always throw an exception if they were used when caching an RDD or in a ShuffleMapStage, but that would make this limitation far too obvious.
-[^and-speculation]: And I haven't even mentioned anything about speculative execution yet.  Honestly, I have no idea what the behavior currently is, but I don't even want to bother trying.  There are enough problems as it is that it doesn't matter.  Accumulators, you are dead to me.
+[^and-speculation]: And I haven't even mentioned anything about speculative execution yet.  Honestly, I have no idea what the behavior currently is, but I don't even want to bother trying.  There are enough problems as it is that it doesn't matter.
 
 
 What Should Spark Have?
