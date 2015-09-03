@@ -111,7 +111,7 @@
 <p>I don’t make that statement lightly.  Accumulators were one of the reasons I was initially attracted to Apache Spark – they appear
 to be a fantastic generalization of counters in MapReduce.  Indeed, I’ve made a number of contributions to Spark, but
 accumulators are probably the only place I’ve strongly <a href="https://github.com/apache/spark/commit/ae07f3864c2fe4837bfacb8faf6ea8432f510cf7">influenced the</a>
- <a href="https://github.com/apache/spark/commit/82a3327862d678500ecebd004c1b5b04862aaad8">public</a> <a href="https://github.com/apache/spark/commit/6d7f907e73e9702c0dbd0e41e4a52022c0b81d3d">api</a>.  But I’m not proud of that, its really a source of embarassment.  I made those suggestions before I properly understood 
+ <a href="https://github.com/apache/spark/commit/82a3327862d678500ecebd004c1b5b04862aaad8">public</a> <a href="https://github.com/apache/spark/commit/6d7f907e73e9702c0dbd0e41e4a52022c0b81d3d">api</a>.  But I’m not proud of that, it's really a source of embarrassment.  I made those suggestions before I properly understood 
 how accumulators fit into Spark’s computational model.  Now I see they don’t even work well as a replacement for MapReduce counters.</p>
 
 <h1 id="potential-uses-for-accumulators">Potential Uses For Accumulators</h1>
@@ -168,7 +168,7 @@ create one accumulator:</p>
 <script src="https://gist.github.com/squito/6ba75eb102103cea266b.js?file=VectorAccumulable.scala"></script>
 
 <p>We extend this to many more types that define a <code>+</code> – for example, see all the possibilities from 
-<a href="https://github.com/twitter/algebird">Twitter’s Algebird Library</a>.  You could usen accumulator to track a set of interesting users, or even a BloomFilter for
+<a href="https://github.com/twitter/algebird">Twitter’s Algebird Library</a>.  You could use an accumulator to track a set of interesting users, or even a BloomFilter for
 (approximately) storing a really large set of users, or using HyperLogLog to (approximately) count distinct users.  What is really unique
 about the possibility of using accumulators is that you can compute multiple types of aggregations <strong>in one pass</strong>.  This may seem
 irrelevant if you are processing 50 GB on a large cluster, and you’ve got it all cached in memory – but it makes a big difference 
@@ -185,8 +185,8 @@ This means that even if the accumulators are only 1 MB, if you have 10K tasks, y
 the number of partitions with Spark is notoriously hard, and in general your best bet is to err on the side of using too many partitions.  10K
 is a reasonable number for even 1 TB of data. </p>
 
-<p>This is just an implemenation detail, right?  Spark should be able to change the internals to avoid sending all results back to the
-driver (and perhaps a host of other optimizations as well, eg. avoiding serialization &amp; deserialization between tasks on the same executor).
+<p>This is just an implementation detail, right?  Spark should be able to change the internals to avoid sending all results back to the
+driver (and perhaps a host of other optimizations as well, e.g. avoiding serialization &amp; deserialization between tasks on the same executor).
 Indeed, some of these optimizations are already planned for <a href="https://issues.apache.org/jira/browse/SPARK-8137"><code>treeAggregate</code></a>.</p>
 
 <p>Unfortunately, now we find that our hands are tied by the other uses of accumulators.  In particular, we show the value of each accumulator
@@ -209,20 +209,20 @@ input data:</p>
 <ol>
   <li>Since we can really only use counters anyway, why bother with the complications introduced by accumulators?  There shouldn’t be any need
 to create the accumulator value up front.</li>
-  <li>Though its perfectly legal to create an accumulator without a name, eg. <code>sc.accumulator(0L)</code>, it won’t show up in the UI unless you give
+  <li>Though it's perfectly legal to create an accumulator without a name, e.g. <code>sc.accumulator(0L)</code>, it won’t show up in the UI unless you give
 it a name.  This is a constant source of confusion for end users, who don’t know pass in a name and think that the accumulators aren’t working
 for them.</li>
   <li>In addition, just adding a name to your accumulator also has a side-effect that the UI will call <code>.toString</code> on the accumulator update from
-each task.  So if you did use an accumulator on a more complex type with an expensive <code>.toString</code>, just giving the accumultor a name could
+each task.  So if you did use an accumulator on a more complex type with an expensive <code>.toString</code>, just giving the accumulator a name could
 destroy performance.  We’re left with the strange advice to users: if you are just using a counter, make sure you add a name to your counter;
-but if its something more complicated than a counter, be sure you do <em>not</em> add a name.</li>
+but if it's something more complicated than a counter, be sure you do <em>not</em> add a name.</li>
   <li>Though we’re storing the value of the accumulator per-partition for the UI, we don’t have <em>programmatic</em> access to the per-partition values;
 we can only (easily) access the fully merged value.</li>
   <li>How do we know when our counter is “ready”?  Suppose we want to always log the value of the counter, and fail our job if
 there are more than 50 parse errors.  Where would we put that logic?  Because RDD transformations are lazy, the value is still 0 at the end of
 this code sample, regardless of how many errors there truly are.  The user either has to destroy the modularity of their program, by not
 looking at the value until after they execute some action.  And it gets even worse if the RDD is reused – the behavior of the changes
-based on how many times its reused, whether its cached (and whether it fits in the cache).  We could use a <code>SparkListener</code> for this, but that
+based on how many times it's reused, whether it's cached (and whether it fits in the cache).  We could use a <code>SparkListener</code> for this, but that
 is very cumbersome for such a simple feature.</li>
 </ol>
 
@@ -234,19 +234,19 @@ they interact w/ Spark’s failure handling.</p>
 <h1 id="interlude-on-fault-tolerance--stage-retries">Interlude on Fault-Tolerance &amp; Stage Retries</h1>
 
 <p>Before we get into what accumulators do when there are failures, we need to spend a moment to discuss Spark’s failure handling.<br />
-Let me warn you – this section is complicated with lots of details of Spark internals, but its not possible to explain the way accumulators
+Let me warn you – this section is complicated with lots of details of Spark internals, but it's not possible to explain the way accumulators
 work without touching on this.
 There are really
 two very different kinds of failure handling.  First, a task can fail due to some exception in user code.  For example, let’s say that you
 forget to put in any kind of error handling around your parsing code.  As soon as you hit one unexpected record, the task will throw an exception
 and fail.  Spark will then retry the task (up to 4 times by default).  If the task fails everytime, Spark gives up, and fails your job, showing
-you the exception.  If by some stroke of luck, the task succeeds on the retries, then Spark happily continues.  It will only the accumulator
-update from the successful task, and the failed tasks are completely ignored.  All is well.</p>
+you the exception.  If by some stroke of luck, the task succeeds on the retries, then Spark happily continues.  It will 
+only update the accumulator from the successful task, and the failed tasks are completely ignored.  All is well.</p>
 
 <p>Things get a lot more interesting when we talk about <em>stage</em> failure.  This is how Spark handles a node going down in a cluster – that
-is, the error isn’t from any fault of the user, but its from hardware failure.  Specifically, there is special handling when Spark notices a
-node go down during a shuffle, while its reading shuffle output.  Because shuffle output is stored locally, if a node goes down, that shuffle
-output is gone.  There is no sense in just retrying the task that reads the shuffle output, since its doomed to fail.  Instead, spark goes
+is, the error isn’t from any fault of the user, but it's from hardware failure.  Specifically, there is special handling when Spark notices a
+node go down during a shuffle, while it's reading shuffle output.  Because shuffle output is stored locally, if a node goes down, that shuffle
+output is gone.  There is no sense in just retrying the task that reads the shuffle output, since it's doomed to fail.  Instead, spark goes
 back to the stage that <em>generated</em> the shuffle output, looks at which tasks need to be rerun, and executes them on one of the nodes that is
 still alive.</p>
 
@@ -260,7 +260,7 @@ the percentage of nodes which fail.</p>
 
 <p>Confused?  Don’t worry, that puts you in good company.  Most Spark committers don’t fully understand all the ins and outs of this behavior
 (myself included).  There is general agreement that the scheduler code is extremely complicated and hard to understand.  And there is a major
-<a href="https://issues.apache.org/jira/browse/SPARK-8987">shortage of tests</a>, so its hard to even find a good set of examples. <sup id="fnref:nobody-understands"><a href="#fn:nobody-understands" class="footnote">1</a></sup></p>
+<a href="https://issues.apache.org/jira/browse/SPARK-8987">shortage of tests</a>, so it's hard to even find a good set of examples. <sup id="fnref:nobody-understands"><a href="#fn:nobody-understands" class="footnote">1</a></sup></p>
 
 <h1 id="failure-as-counters">Failure As Counters</h1>
 
@@ -279,7 +279,7 @@ out, you are already in hot water.</p>
 <p>Or maybe you are just doing ad-hoc data exploration, and throw in a counter for some basic data validation.  Initially the check works just fine,
 correctly reporting errors as you try it out on a handful of different data sets.  In fact, it even helps you discover that one of your datasets
 has a far higher percentage of errors than any other.  So you decide to spend some time investigating why this dataset is different.  Oh, 
-wait … its simply
+wait … it's simply
 that this particular dataset was bigger, so it didn’t fit in the cache.  Your code made multiple passes over the parsed data (which you expected to 
 be cached in memory), so your counters have over-counted.  No big deal, you just lost one week of your life chasing phantoms. <sup id="fnref:worst-possible"><a href="#fn:worst-possible" class="footnote">3</a></sup></p>
 
@@ -297,7 +297,7 @@ isn’t cached.  This is fundamentally at odds with a metric that only depends o
 of these problems require changes to the api that just aren’t compatible.  For example, the current muddling together of
 simple counters with a more complex system for arbitrary computation on the data is one source of the problem.</p>
 
-<p>I believe the first step is to provide a new api which aims to just provide good counters, and nothing more.  Here’s an eample of what it might look like:</p>
+<p>I believe the first step is to provide a new api which aims to just provide good counters, and nothing more.  Here’s an example of what it might look like:</p>
 
 <script src="https://gist.github.com/squito/6ba75eb102103cea266b.js?file=BetterCounters.scala"></script>
 
@@ -308,7 +308,7 @@ be very simple, and the semantics around RDD recomputation &amp; stage failure s
 need to report any results per-task, so the implementation would have much more flexibility to do something efficient.  This would also
 need to clearly define the semantics around RDD recomputation and stage failure, perhaps with an even more limited set of guarantees.
 Maybe Spark doesn’t need this now (and maybe it never will).  But in the meantime, accumulators should stop masquerading as this.
-Whatever we do, its clear we should start by figuring out what <em>semantics</em> we want through all the different use cases and failure
+Whatever we do, it's clear we should start by figuring out what <em>semantics</em> we want through all the different use cases and failure
 scenarios, and then figure out what is feasible to implement (rather than just piling on series of convenient and incomprehensible hacks).</p>
 
 <h1 id="summary">Summary</h1>
