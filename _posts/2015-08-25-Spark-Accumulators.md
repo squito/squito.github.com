@@ -28,7 +28,7 @@ that are checked might be ad-hoc during data exploration, or they could be fixed
 
 2.  A light-weight debugging tool, to give interactive per-task information.   For example, we might be interested in how many
 records we have per-task.  We may be interested in metrics that aren't available to the framework -- perhaps we know that in our 
-application, records which match some special filter X are far more expensive to process.  Thus the user might want to add a special
+application, records that match some special filter X are far more expensive to process.  Thus the user might want to add a special
 counter to track these records per-task.
 
 3.  Accurately measure resource usage and profile a spark application, from the perspective of *cluster utilization*.  For example,
@@ -40,7 +40,7 @@ spark internals, count how many times an RDD is recomputed, etc.
 that could be computed as a *side-effect* of other processing.
 For example, while parsing your input data, you might want to also count the total number of records, track a small sample of records with
 parsing errors for debugging later on, label records into one of 100K buckets and track the total count per bucket, and produce a bloom
-filter of user IDs that match some special criteria.  Obviously, this is completely impossible with counters.
+filter of user IDs that match some special criteria, all in one pass over the data.  Obviously, this is completely impossible with counters.
 
 At first blush, it might seem like Spark's Accumulators are perfect for all these situations.  The first three uses might seem nearly
 identical, especially when you come from MapReduce, and fairly straightforward translations from counters.  And #4 makes it seems like Spark 
@@ -56,7 +56,7 @@ Unlike counters in MapReduce, Spark's accumulators generalize in two major ways:
 1. The type of data is not limited to a `Long`
 2. The user can define an arbitrary commutative and associative operation to merge values (instead of being limited to `+` on natural numbers).
 
-This opens the door a lot of cool possibilities.  You can consider many more types which define their own version of `+`.  For example, `+`
+This opens the door to a lot of cool possibilities.  You can consider many more types that define their own version of `+`.  For example, `+`
 on two vectors might naturally be defined as element-wise addition.  For example, say you categorize users based on demographics, spending behavior,
 activity profile, etc. -- you could easily end up with 10K different buckets.  Rather than having to come up with 10K counters, you could
 create one accumulator:
@@ -81,13 +81,13 @@ This means that even if the accumulators are only 1 MB, if you have 10K tasks, y
 the number of partitions with Spark is notoriously hard, and in general your best bet is to err on the side of using too many partitions.  10K
 is a reasonable number for even 1 TB of data. 
 
-This is just an implemenation detail, right?  Spark should be able to change the internals to avoid sending all results back to the
+This is just an implementation detail, right?  Spark should be able to change the internals to avoid sending all results back to the
 driver (and perhaps a host of other optimizations as well, eg. avoiding serialization & deserialization between tasks on the same executor).
 Indeed, some of these optimizations are already planned for [`treeAggregate`](https://issues.apache.org/jira/browse/SPARK-8137).
 
 Unfortunately, now we find that our hands are tied by the other uses of accumulators.  In particular, we show the value of each accumulator
-per task, as a debugging tool (our original use case #2).  So we can't merge the values together, since we must make keep the values
-distinct per-task.
+per task, as a debugging tool (our original use case #2).  So we can't merge the values together, since we must keep distinct values
+per-task.
 
 OK fine, so we don't get some grand generalization over MapReduce counters.  All we really want is counters anyway,
 and we've still got that, right?
@@ -95,20 +95,20 @@ and we've still got that, right?
 Strange API 
 ============
 
-Using accumulators as counters is very unsatisfactory, because of a klunky api and useless behavior around fault-tolerance.  We'll start by
+Using accumulators as counters is very unsatisfactory, because of a clunky api and useless behavior around fault-tolerance.  We'll start by
 considering the api, the simpler of the two.  Consider the most basic use case for counters, counting parse errors in our
 input data:
 
 <script src="https://gist.github.com/squito/6ba75eb102103cea266b.js?file=AccumulatorsAsCounters.scala"></script>
 
-API design is very subjective, but several aspects of this seems pointless complicated to me.
+API design is very subjective, but several aspects of this seems pointlessly complicated to me.
 
 1. Since we can really only use counters anyway, why bother with the complications introduced by accumulators?  There shouldn't be any need
 to create the accumulator value up front.
 2. Though its perfectly legal to create an accumulator without a name, eg. `sc.accumulator(0L)`, it won't show up in the UI unless you give
 it a name.  This is a constant source of confusion for end users, who don't know to pass in a name and think that the accumulators aren't working.
-3. In addition, just adding a name to your accumulator also has a side-effect that the UI will call `.toString` on the accumulator update from
-each task.  So if you did use an accumulator on a more complex type with an expensive `.toString`, just giving the accumultor a name could
+3. In addition, just adding a name to your accumulator also has the side-effect that the UI will call `.toString` on the accumulator update from
+each task.  So if you did use an accumulator on a more complex type with an expensive `.toString`, just giving the accumulator a name could
 destroy performance.  We're left with the strange advice to users: if you are just using a counter, make sure you add a name to your counter;
 but if its something more complicated than a counter, be sure you do *not* add a name.
 4. Though we're storing the value of the accumulator per-partition for the UI, we don't have *programmatic* access to the per-partition values;
@@ -122,7 +122,7 @@ based on how many times its reused, whether its cached, whether it fits in the c
 is very cumbersome for such a simple feature.
 
 But you say I am a cry-baby for quibbling about such minor API issues.  Modularity is for the weak; you always have global knowledge of your spark
-application, where every RDD is created, computed, cached, how much fits in memory, and you love updating your custom `SparkListener` everytime
+application, where every RDD is created, computed, cached, how much fits in memory, and you love updating your custom `SparkListener` every time
 you add another counter.  Nonetheless, you *still* can't rely on accumulators to do anything useful for you, because of how strangely 
 they interact w/ Spark's failure handling.
 
