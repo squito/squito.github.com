@@ -73,7 +73,7 @@ Thyme gave me a nice report on each version, that was simple to read and full of
 Reading from an array of floats was the best, with the FloatBuffer & ByteBuffer coming in at 2x & 5x respectively.  Getting these
 results was so easy, I started playing around with lots of others tasks, like taking the sum of the logs instead of the sum, or wrapping
 the ByteBuffers with a wrapper class to make them more Scala-friendly.  Then I thought I could at least
-clean up the repitition of those ugly while loops by creating a common interface, and that's where I got myself into trouble.
+clean up the repetition of those ugly while loops by creating a common interface, and that's where I got myself into trouble.
 
 ## Profiling Interfaces
 
