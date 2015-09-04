@@ -13,7 +13,7 @@ git push origin source
 
 
 # Push master branch
-jekyll
+jekyll b
 git checkout master
 git rm -qr .
 cp -r _site/. .
