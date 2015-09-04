@@ -125,7 +125,7 @@ user ID, or how many purchases occurred within some time window.  This is a clas
 that are checked might be ad-hoc during data exploration, or they could be fixed checks in a regularly run ETL pipeline.</p>
   </li>
   <li>
-    <p>A light-weight debugging tool, to giver interactive per-task information.   For example, we might be interested in how many
+    <p>A light-weight debugging tool, to give interactive per-task information.   For example, we might be interested in how many
 records we have per-task.  We may be interested in metrics that aren’t available to the framework – perhaps we know that in our 
 application, records which match some special filter X are far more expensive to process.  Thus the user might want to add a special
 counter to track these records per-task.</p>
@@ -168,7 +168,7 @@ create one accumulator:</p>
 <script src="https://gist.github.com/squito/6ba75eb102103cea266b.js?file=VectorAccumulable.scala"></script>
 
 <p>We extend this to many more types that define a <code>+</code> – for example, see all the possibilities from 
-<a href="https://github.com/twitter/algebird">Twitter’s Algebird Library</a>.  You could usen accumulator to track a set of interesting users, or even a BloomFilter for
+<a href="https://github.com/twitter/algebird">Twitter’s Algebird Library</a>.  You could use an accumulator to track a set of interesting users, or even a BloomFilter for
 (approximately) storing a really large set of users, or using HyperLogLog to (approximately) count distinct users.  What is really unique
 about the possibility of using accumulators is that you can compute multiple types of aggregations <strong>in one pass</strong>.  This may seem
 irrelevant if you are processing 50 GB on a large cluster, and you’ve got it all cached in memory – but it makes a big difference 
@@ -199,7 +199,7 @@ and we’ve still got that, right?</p>
 <h1 id="strange-api">Strange API</h1>
 
 <p>Using accumulators as counters is very unsatisfactory, because of a klunky api and useless behavior around fault-tolerance.  We’ll start by
-considering the api, the simpler of the two.  Lets start by considering the most basic use case for counters, counting parse errors in our
+considering the api, the simpler of the two.  Consider the most basic use case for counters, counting parse errors in our
 input data:</p>
 
 <script src="https://gist.github.com/squito/6ba75eb102103cea266b.js?file=AccumulatorsAsCounters.scala"></script>
@@ -210,8 +210,7 @@ input data:</p>
   <li>Since we can really only use counters anyway, why bother with the complications introduced by accumulators?  There shouldn’t be any need
 to create the accumulator value up front.</li>
   <li>Though its perfectly legal to create an accumulator without a name, eg. <code>sc.accumulator(0L)</code>, it won’t show up in the UI unless you give
-it a name.  This is a constant source of confusion for end users, who don’t know pass in a name and think that the accumulators aren’t working
-for them.</li>
+it a name.  This is a constant source of confusion for end users, who don’t know to pass in a name and think that the accumulators aren’t working.</li>
   <li>In addition, just adding a name to your accumulator also has a side-effect that the UI will call <code>.toString</code> on the accumulator update from
 each task.  So if you did use an accumulator on a more complex type with an expensive <code>.toString</code>, just giving the accumultor a name could
 destroy performance.  We’re left with the strange advice to users: if you are just using a counter, make sure you add a name to your counter;
@@ -220,9 +219,10 @@ but if its something more complicated than a counter, be sure you do <em>not</em
 we can only (easily) access the fully merged value.</li>
   <li>How do we know when our counter is “ready”?  Suppose we want to always log the value of the counter, and fail our job if
 there are more than 50 parse errors.  Where would we put that logic?  Because RDD transformations are lazy, the value is still 0 at the end of
-this code sample, regardless of how many errors there truly are.  The user either has to destroy the modularity of their program, by not
-looking at the value until after they execute some action.  And it gets even worse if the RDD is reused – the behavior of the changes
-based on how many times its reused, whether its cached (and whether it fits in the cache).  We could use a <code>SparkListener</code> for this, but that
+parsing transformation, regardless of how many errors there truly are.  The user has to destroy the modularity of their program, by not
+looking at the value until after they execute some action.  And it gets even worse if the RDD is reused – the behavior changes
+based on how many times its reused, whether its cached, whether it fits in the cache, and whether it stays in the cache.  We could use a 
+<code>SparkListener</code> for this, but that
 is very cumbersome for such a simple feature.</li>
 </ol>
 
@@ -233,14 +233,14 @@ they interact w/ Spark’s failure handling.</p>
 
 <h1 id="interlude-on-fault-tolerance--stage-retries">Interlude on Fault-Tolerance &amp; Stage Retries</h1>
 
-<p>Before we get into what accumulators do when there are failures, we need to spend a moment to discuss Spark’s failure handling.<br />
-Let me warn you – this section is complicated with lots of details of Spark internals, but its not possible to explain the way accumulators
+<p>Before we get into what accumulators do when there are failures, we need to spend a moment to discuss Spark’s failure handling.  Let
+me warn you – this section is complicated with lots of details of Spark internals, but its not possible to explain the way accumulators
 work without touching on this.
 There are really
 two very different kinds of failure handling.  First, a task can fail due to some exception in user code.  For example, let’s say that you
 forget to put in any kind of error handling around your parsing code.  As soon as you hit one unexpected record, the task will throw an exception
-and fail.  Spark will then retry the task (up to 4 times by default).  If the task fails everytime, Spark gives up, and fails your job, showing
-you the exception.  If by some stroke of luck, the task succeeds on the retries, then Spark happily continues.  It will only the accumulator
+and fail.  Spark will then retry the task (up to 4 times by default).  If the task fails everytime, Spark gives up and fails your job, showing
+you the exception.  If by some stroke of luck, the task succeeds on the retries, then Spark happily continues.  It will only count the accumulator
 update from the successful task, and the failed tasks are completely ignored.  All is well.</p>
 
 <p>Things get a lot more interesting when we talk about <em>stage</em> failure.  This is how Spark handles a node going down in a cluster – that
@@ -250,7 +250,8 @@ output is gone.  There is no sense in just retrying the task that reads the shuf
 back to the stage that <em>generated</em> the shuffle output, looks at which tasks need to be rerun, and executes them on one of the nodes that is
 still alive.</p>
 
-<p>Here is where things start (ha!) to get tricky.  The stage which generated the map output has executed some of its tasks multiple times, even
+<p>Here is where things start (ha!) to get tricky.  After we regenerate the missing shuffle output, the stage which generated the map output has 
+executed some of its tasks multiple times, even
 if the individual tasks were always successful.  Spark counts accumulator updates from all of them.  If multiple nodes go down, Spark may realize
 this immediately, or it may take multiple rounds of stage retries to detect it.  In addition, if there is a long lineage of stages, from one shuffle
 stage to another shuffle stage, Spark may need to recompute some tasks from all of those stages.  Furthermore, when Spark retries the stage,
@@ -273,7 +274,7 @@ example.  But if you try to rely on them, they might be incorrect in unexpected 
 purchases, and you track total spend with a counter.  You may even have some alerting if spend levels are too high or too low.  You’ve unit-tested
 this logic, and even come to rely on it for escalations.  But if one node in your cluster happens to go down, Spark may happily report the job
 completes successfully, though your counter could be off an arbitrary amount.<sup id="fnref:no-fault-tolerance"><a href="#fn:no-fault-tolerance" class="footnote">2</a></sup>  So you get an alert at 2 AM that spend was too high, when it was
-really just fine.  Or even worse, you fail to get an alert when spend is too low, don’t notice for far too long.  By the time you figure this
+really just fine.  Or even worse, you fail to get an alert when spend is too low, and don’t notice for far too long.  By the time you figure this
 out, you are already in hot water.</p>
 
 <p>Or maybe you are just doing ad-hoc data exploration, and throw in a counter for some basic data validation.  Initially the check works just fine,
@@ -313,7 +314,7 @@ scenarios, and then figure out what is feasible to implement (rather than just p
 
 <h1 id="summary">Summary</h1>
 
-<p>I know I’ve been a little over-the-top in my attacks on accumulators, but I want to make it painfully clear just how painful
+<p>I know I’ve been a little over-the-top in my attacks on accumulators, but I want to make it painfully clear just how confusing 
 things get when you rely on accumulators.  The truth is, I still use them, but only because they are all I’ve got.  I’ve
 even <a href="https://gist.github.com/squito/2f7cc02c313e4c9e7df4">written up some examples</a> of uses of accumulators beyond
 simple counters.  But I always get a queasy feeling in my stomach everytime I recommend them, since I’m certain users
