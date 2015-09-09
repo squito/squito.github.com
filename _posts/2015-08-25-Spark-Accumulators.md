@@ -7,8 +7,6 @@ tags:
     - Tech
 ---
 
-**PRE-PRINT VERSION** _posting just to get some people to review, please ignore_
-
 Spark Accumulators: What are they good for? Absolutely Nothing.
 
 I don't make that statement lightly.  Accumulators were one of the reasons I was initially attracted to Apache Spark -- they appear
