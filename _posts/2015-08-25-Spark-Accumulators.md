@@ -38,7 +38,8 @@ spark internals, count how many times an RDD is recomputed, etc.
 that could be computed as a *side-effect* of other processing.
 For example, while parsing your input data, you might want to also count the total number of records, track a small sample of records with
 parsing errors for debugging later on, label records into one of 100K buckets and track the total count per bucket, and produce a bloom
-filter of user IDs that match some special criteria, all in one pass over the data.  Obviously, this is completely impossible with counters.
+filter of user IDs that match some special criteria.  And we can do it all in one pass over the data.  Obviously, this is completely impossible 
+with counters.
 
 At first blush, it might seem like Spark's Accumulators are perfect for all these situations.  The first three uses might seem nearly
 identical, especially when you come from MapReduce, and fairly straightforward translations from counters.  And #4 makes it seems like Spark 
@@ -72,7 +73,7 @@ on disk.
 Unfortunately, using Spark's accumulators this way is a bad idea, because they are extremely inefficient.  To be fair, this model of computation
 has some very real limitations; fundamentally, if you have N cores on each executor, you'll need N in-memory copies of the accumulators.  So
 if you have 16 cores, and you create 1 GB of accumulators, you'll need 16 GB of memory.  But even restricting ourselves to "modestly" sized
-accumulators, say in the 10s of MB, still would open the doors to much more than what is possible with MapReduce counters.
+accumulators, say in the 10s of MB, would still open the doors to much more than what is possible with MapReduce counters.
 
 However, Spark won't handle modestly sized accumulators.  The problem is that each task sends it's accumulators directly to the driver.
 This means that even if the accumulators are only 1 MB, if you have 10K tasks, you will send 10 GB of data back to a single node.  Tuning
@@ -107,7 +108,7 @@ to create the accumulator value up front.
 it a name.  This is a constant source of confusion for end users, who don't know to pass in a name and think that the accumulators aren't working.
 3. In addition, just adding a name to your accumulator also has the side-effect that the UI will call `.toString` on the accumulator update from
 each task.  So if you did use an accumulator on a more complex type with an expensive `.toString`, just giving the accumulator a name could
-destroy performance.  We're left with the strange advice to users: if you are just using a counter, make sure you add a name to your counter;
+destroy performance.  We're left with the strange advice to users: if you are just using a counter, make sure you *do* add a name to your counter;
 but if it's something more complicated than a counter, be sure you do *not* add a name.
 4. Though we're storing the value of the accumulator per-partition for the UI, we don't have *programmatic* access to the per-partition values;
 we can only (easily) access the fully merged value.
